@@ -1,6 +1,6 @@
 // Service Worker — آلة حاسبة المحطات (أوفلاين)
 // يخزّن التطبيق كامل أول مرة، وبعدها يشتغل من غير نت نهائياً.
-const CACHE = 'canal-app-v8';
+const CACHE = 'canal-app-v9';
 const ASSETS = [
   './',
   './index.html',

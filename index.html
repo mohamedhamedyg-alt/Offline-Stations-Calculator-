@@ -3960,7 +3960,9 @@ function validateAll(){
     if(!document.getElementById('maint-next-'+idx)?.value){errors.push(`الصيانة القادمة ${label}`);markErr('maint-next-'+idx,'إلزامى');}
     if(iVal('maint-rem-'+idx)){errors.push(`المتبقى للصيانة ${label}`);markErr('maint-rem-'+idx,'إلزامى');}
     if(c.motor==='gas'){
-      if(!document.getElementById('goil-type-'+idx)?.value){errors.push(`زيت المحرك الغازى ${label}`);}
+      if(!document.getElementById('goil-type-'+idx)?.value){errors.push(`نوع زيت المحرك الغازى ${label}`);markErr('goil-type-'+idx,'اختر');}
+      if(iVal('goil-cons-'+idx)){errors.push(`استهلاك زيت المحرك الغازى ${label}`);markErr('goil-cons-'+idx,'إلزامى');}
+      if(iVal('goil-bal-'+idx)){errors.push(`رصيد زيت المحرك الغازى ${label}`);markErr('goil-bal-'+idx,'إلزامى');}
       if(iVal('gm-last-'+idx)){errors.push(`صيانة المحرك ${label}`);}
       if(iVal('gm-date-'+idx)){errors.push(`تاريخ صيانة المحرك ${label}`);}
       if(iVal('gm-hrs-'+idx)){errors.push(`ساعات المحرك عند آخر صيانة ${label}`);}
@@ -3973,6 +3975,21 @@ function validateAll(){
       if(iVal('lube-rem-'+idx)){errors.push(`المتبقى للتشحيم ${label}`);}
     }
   });
+  // الهوزات المتوقفة — كل هوز لازم رقم + سبب توقف
+  document.querySelectorAll('#hoses-container [id^="hose-num-"]').forEach(el=>{
+    const hid=el.id.replace('hose-num-','');
+    if(!(parseInt(el.value)>0)){ errors.push('رقم الهوز المتوقف'); markErr('hose-num-'+hid,'أدخل رقم الهوز'); }
+    const r=document.getElementById('hose-reason-'+hid);
+    if(!r || r.value.trim()===''){ errors.push('سبب توقف الهوز'); markErr('hose-reason-'+hid,'إلزامى'); }
+  });
+  // لو فيه أى توقف (عطل أو خارج الإرادة) → سبب انخفاض المبيعات إلزامى
+  const _anyStop = Array.from(document.querySelectorAll('.fault-row')).some(row=>{
+    const fid=row.id.replace('fault-','');
+    const fromH=document.getElementById('ft-fh-'+fid)?.value, toH=document.getElementById('ft-th-'+fid)?.value;
+    const reason=document.getElementById('ft-stop-reason-'+fid)?.value, hasType=document.getElementById('ft-type-'+fid)?.value;
+    return (fromH&&toH) || reason || hasType;
+  });
+  if(_anyStop && iVal('f-low-reason')){ errors.push('سبب انخفاض المبيعات (بسبب التوقف)'); markErr('f-low-reason','إلزامى'); }
   // Electricity
   if(!mi){
     const kI=parseNum(document.getElementById('f-kwh-ind')?.value)||0;
