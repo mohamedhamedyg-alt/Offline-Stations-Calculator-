@@ -1,6 +1,6 @@
 // Service Worker — آلة حاسبة المحطات (أوفلاين)
 // يخزّن التطبيق كامل أول مرة، وبعدها يشتغل من غير نت نهائياً.
-const CACHE = 'canal-app-v9';
+const CACHE = 'canal-app-v10';
 const ASSETS = [
   './',
   './index.html',
@@ -39,13 +39,16 @@ self.addEventListener('fetch', function (e) {
   var url = new URL(req.url);
   if (url.origin !== self.location.origin) return; // أى نداء خارجى يعدّى عادى
 
-  // للتنقّل (فتح الصفحة): الكاش أولاً ثم index.html كخطة بديلة
+  // للتنقّل (فتح الصفحة): النت أولاً وانت أونلاين (عشان التحديثات توصل فورًا)،
+  // ولو مفيش نت نرجع للنسخة المخزّنة (أوفلاين)
   if (req.mode === 'navigate') {
     e.respondWith(
-      caches.match(req).then(function (r) {
-        return r || caches.match('./index.html').then(function (h) {
-          return h || fetch(req);
-        });
+      fetch(req).then(function (resp) {
+        var copy = resp.clone();
+        caches.open(CACHE).then(function (c) { c.put('./index.html', copy); });
+        return resp;
+      }).catch(function () {
+        return caches.match('./index.html').then(function (h) { return h || caches.match(req); });
       })
     );
     return;
