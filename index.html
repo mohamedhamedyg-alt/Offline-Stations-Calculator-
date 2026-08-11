@@ -429,7 +429,7 @@ td.mg-fz2{position:sticky;right:48px;background:#F4F8FC;font-weight:700;text-ali
         <input type="text" class="login-input" id="station-code" placeholder="000" inputmode="numeric" autocomplete="off" maxlength="10" onkeydown="if(event.key==='Enter')doLogin()" style="margin-bottom:10px">
         <button class="btn-login" onclick="doLogin()">دخول</button>
         <div class="login-err" id="login-err">الكود غير صحيح، تأكد وحاول مرة أخرى</div>
-        <div style="text-align:center;margin-top:14px;font-size:12px;color:#64748B;font-weight:800">الإصدار 10 · ✈️ أوفلاين</div>
+        <div style="text-align:center;margin-top:14px;font-size:12px;color:#64748B;font-weight:800">الإصدار 11 · ✈️ أوفلاين</div>
         <!-- أزرار مخفية للتوافق مع الكود القديم -->
         <div style="display:none">
           <button id="btn-mode-station" class="active"></button>
@@ -4148,6 +4148,13 @@ async function submitForm(){
     if(!document.getElementById('f-date')?.value){ stopErrors.push('تاريخ المبيعات'); markErr('f-date','إلزامى'); }
     // إجمالى الأمتار المفقودة بسبب التوقف — إلزامى عند توقف المحطة
     if(iVal('f-stop-loss')){ stopErrors.push('إجمالى الأمتار المفقودة بسبب التوقف'); markErr('f-stop-loss','إلزامى'); }
+    // الهوزات المتوقفة إلزامية حتى فى حالة توقف المحطة — رقم + سبب لكل هوز
+    document.querySelectorAll('#hoses-container [id^="hose-num-"]').forEach(function(el){
+      var hid=el.id.replace('hose-num-','');
+      if(!(parseInt(el.value)>0)){ stopErrors.push('رقم الهوز المتوقف'); markErr('hose-num-'+hid,'أدخل رقم الهوز'); }
+      var r=document.getElementById('hose-reason-'+hid);
+      if(!r || r.value.trim()===''){ stopErrors.push('سبب توقف الهوز'); markErr('hose-reason-'+hid,'إلزامى'); }
+    });
     if(stopErrors.length>0){
       const sum=document.getElementById('validation-summary');
       sum.innerHTML=`<div style="font-size:12px;font-weight:800;color:var(--red);margin-bottom:7px">أكمل بيانات التوقف (${stopErrors.length}):</div>`+stopErrors.map(e=>`<div style="font-size:11px;color:#7F1D1D;padding:2px 0">• ${e}</div>`).join('');
