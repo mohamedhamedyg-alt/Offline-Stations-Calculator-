@@ -429,7 +429,7 @@ td.mg-fz2{position:sticky;right:48px;background:#F4F8FC;font-weight:700;text-ali
         <input type="text" class="login-input" id="station-code" placeholder="000" inputmode="numeric" autocomplete="off" maxlength="10" onkeydown="if(event.key==='Enter')doLogin()" style="margin-bottom:10px">
         <button class="btn-login" onclick="doLogin()">دخول</button>
         <div class="login-err" id="login-err">الكود غير صحيح، تأكد وحاول مرة أخرى</div>
-        <div style="text-align:center;margin-top:14px;font-size:12px;color:#64748B;font-weight:800">الإصدار 11 · ✈️ أوفلاين</div>
+        <div style="text-align:center;margin-top:14px;font-size:12px;color:#64748B;font-weight:800">الإصدار 12 · ✈️ أوفلاين</div>
         <!-- أزرار مخفية للتوافق مع الكود القديم -->
         <div style="display:none">
           <button id="btn-mode-station" class="active"></button>
@@ -788,6 +788,15 @@ td.mg-fz2{position:sticky;right:48px;background:#F4F8FC;font-weight:700;text-ali
         <div class="dual-label" style="direction:ltr"><span style="text-align:right">الجزء الصحيح</span><span>الكسر (3 أرقام)</span></div>
         <input type="hidden" id="f-sales" value="0">
         <div class="validation-msg" id="sales-err">هذا الحقل إلزامى</div>
+      </div>
+      <!-- مبيعات مقسّمة (لمحطات معيّنة زى الحرفيين) -->
+      <div id="parts-wrap" style="display:none;background:#F0F9FF;border-radius:8px;padding:12px;margin-top:4px">
+        <div id="parts-boxes"></div>
+        <div style="background:#0369A1;color:#fff;border-radius:8px;padding:10px;text-align:center;margin-top:6px">
+          <div style="font-size:12px;opacity:.9">إجمالى المبيعات (تلقائى)</div>
+          <div style="font-size:20px;font-weight:800;direction:ltr" id="parts-total-display">0.00</div>
+          <div style="font-size:11px;opacity:.85">م³</div>
+        </div>
       </div>
     </div>
   </div>
@@ -2165,7 +2174,7 @@ const STATIONS={
   "460":{name:"الإسماعيلية القنطرة شرق",region:"الإسماعيلية",comps:[{name:"KwangShin",model:"GEO-BII-200",motor:'elec'}],ref_flow:721.8},
   "469":{name:"الإسماعيلية قوات الأمن",region:"الإسماعيلية",comps:[{name:"FORNOVO",model:"4DA388",motor:'elec'},{name:"FORNOVO",model:"4DA388",motor:'elec'}],ref_flow:652},
   "33":{name:"بورسعيد التعمير",region:"بورسعيد",comps:[{name:"Hyosung",model:"JGJ/4",motor:'gas',motor_name:'Ariel'},{name:"Safe",model:"SHG355-F4-EM",motor:'elec'}],ref_flow:1066.7},
-  "60":{name:"بورسعيد الحرفيين",region:"بورسعيد",comps:[{name:"Safe",model:"SHG355-F4-EM",motor:'elec'},{name:"GRAF",model:"GRF 115-3-4-160-2B",motor:'elec'}],ref_flow:720},
+  "60":{name:"بورسعيد الحرفيين",region:"بورسعيد",comps:[{name:"Safe",model:"SHG355-F4-EM",motor:'elec'},{name:"GRAF",model:"GRF 115-3-4-160-2B",motor:'elec'}],ref_flow:720,parts:["الحرفيين-1","الحرفيين-2"]},
   "78":{name:"بورسعيد المواقف",region:"بورسعيد",comps:[{name:"GRAF",model:"GRF 115-3-4-160-2B",motor:'elec'},{name:"CUBO",model:"P95B DB",motor:'elec'}],ref_flow:746.7},
   "92":{name:"بورسعيد عادل الشربينى",region:"بورسعيد",comps:[{name:"ASPRO",model:"IODM 115-4R",motor:'elec'}],ref_flow:720},
   "178":{name:"بورسعيد شارع 100",region:"بورسعيد",comps:[{name:"GRAF",model:"GRF 115-3-4-160-2B",motor:'elec'},{name:"GRAF",model:"GRF 115-3-4-200-2B",motor:'elec'}],ref_flow:746.7},
@@ -2269,6 +2278,7 @@ function loadForm(){
   const htEl=document.getElementById('f-has-truck'); if(htEl) htEl.value='no';
   ['f-indiv-int','f-indiv-frac','f-truck-int','f-truck-frac'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   if(typeof onTruckChange==='function') onTruckChange();
+  if(typeof setupSalesParts==='function') setupSalesParts();
   // تصفير بيان الحريق (يُعاد بناؤه للمحطة الجديدة)
   const fireItems=document.getElementById('fire-items'); if(fireItems){ fireItems.innerHTML=''; fireItems.dataset.built=''; }
   fireFaultCounters={ext:0, boxes:0, systems:0, flood:0, alarm:0};
@@ -3081,6 +3091,44 @@ function loadGasPrice(){
 }
 // SALES TOTAL CHECK + استحقاق الصندوق
 // ══════════ الترك (السيارة الناقلة للغاز المضغوط) ══════════
+// ══════════ مبيعات مقسّمة (الحرفيين-1 / الحرفيين-2 ... ) ══════════
+function setupSalesParts(){
+  var st=currentStation;
+  var pw=document.getElementById('parts-wrap');
+  var truckQ=document.getElementById('f-has-truck')?.closest('.form-group');
+  var truckF=document.getElementById('truck-fields');
+  var normalW=document.getElementById('normal-sales-wrap');
+  if(st && st.parts && st.parts.length){
+    if(truckQ) truckQ.style.display='none';
+    if(truckF) truckF.style.display='none';
+    if(normalW) normalW.style.display='none';
+    var ht=document.getElementById('f-has-truck'); if(ht) ht.value='no';
+    var box=document.getElementById('parts-boxes'); box.innerHTML='';
+    st.parts.forEach(function(lbl,i){
+      var div=document.createElement('div'); div.className='form-group'; div.style.marginBottom='10px';
+      div.innerHTML='<label><span class="req">*</span> مبيعات '+lbl+' (م³)</label>'+
+        '<input type="number" class="form-control" id="part-'+i+'" min="0" step="0.001" inputmode="decimal" placeholder="0" style="direction:ltr;text-align:center;font-size:16px;font-weight:800" oninput="if(this.value<0)this.value=0;calcParts()">';
+      box.appendChild(div);
+    });
+    if(pw) pw.style.display='block';
+    calcParts();
+  } else {
+    if(pw) pw.style.display='none';
+    if(truckQ) truckQ.style.display='';
+    if(normalW) normalW.style.display='';
+  }
+}
+function calcParts(){
+  var st=currentStation; if(!st||!st.parts) return;
+  var total=0; st.parts.forEach(function(_,i){ total+=parseFloat(document.getElementById('part-'+i)?.value)||0; });
+  var disp=document.getElementById('parts-total-display');
+  if(disp) disp.textContent=total.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  // نغذّى خانات الإجمالى المخفية عشان باقى الحسابات تشتغل زى ما هى
+  var ip=Math.floor(total), fp=Math.round((total-ip)*1000);
+  var si=document.getElementById('f-sales-int'); if(si) si.value=String(ip);
+  var sf=document.getElementById('f-sales-frac'); if(sf) sf.value=(fp>0?String(fp):'0');
+  if(typeof calcSalesTotal==='function') calcSalesTotal();
+}
 function onTruckChange(){
   const has=document.getElementById('f-has-truck')?.value==='yes';
   const truckFields=document.getElementById('truck-fields');
@@ -3236,6 +3284,8 @@ function __dayName(dstr){
   return names[dt.getDay()]||'-';
 }
 function __fmtH(x){ if(!x || isNaN(x)) return '-'; var r=Math.round(x*100)/100; return (''+r); }
+// تحويل الساعات العشرية (سواء دخلت ساعات:دقائق أو ساعات.كسر) لصيغة «س د»
+function __fmtHM(x){ if(!x || isNaN(x)) return '-'; var h=Math.floor(x); var m=Math.round((x-h)*60); if(m>=60){h++;m-=60;} return h+' س '+m+' د'; }
 // تحويل نص المدة ("1 س 30 د") لدقائق، والعكس
 function __durMins(s){ if(!s) return 0; s=''+s; var hm=s.match(/(\d+)\s*س/), mm=s.match(/(\d+)\s*د/); return (hm?parseInt(hm[1])*60:0)+(mm?parseInt(mm[1]):0); }
 function __fmtMins(m){ if(!m||m<=0) return '0 د'; var h=Math.floor(m/60), mm=m%60; return (h>0?h+' س ':'')+mm+' د'; }
@@ -3311,6 +3361,10 @@ function buildReportText(){
     g2.push('مبيعات الأفراد: '+__iso(__dash(indiv))+' م³');
     g2.push('مبيعات السيارة الناقلة للغاز الطبيعى: '+__iso(__dash(truck))+' م³');
     g2.push('المبيعات الإجمالية: '+__iso(__dash((indiv+truck)||__rv('f-sales')))+' م³');
+  } else if(st.parts && st.parts.length){
+    var _pt=0;
+    st.parts.forEach(function(lbl,i){ var v=__rv('part-'+i); _pt+=parseFloat(v)||0; g2.push('مبيعات '+lbl+': '+__iso(__dash(v))+' م³'); });
+    g2.push('إجمالى المبيعات: '+__iso(__dash(_pt||__rv('f-sales')))+' م³');
   } else {
     g2.push('إجمالى المبيعات: '+di('f-sales')+' م³');
   }
@@ -3332,8 +3386,8 @@ function buildReportText(){
   active.forEach(function(idx){
     var c=(st.comps||[])[idx]||{}; var cn=idx+1;
     g4.push('الضاغط ('+cn+') '+__iso(__dash(c.name))+':');
-    g4.push('• الساعات الكلية: '+__iso(__fmtH(getH(idx,'th'))));
-    g4.push('• الساعات الفعلية: '+__iso(__fmtH(getH(idx,'tf'))));
+    g4.push('• الساعات الكلية: '+__iso(__fmtHM(getH(idx,'th'))));
+    g4.push('• الساعات الفعلية: '+__iso(__fmtHM(getH(idx,'tf'))));
     g4.push('• عدد مرات التشغيل: '+di('starts-'+idx));
     var dev=__compDev(idx);
     g4.push('• الحيود: '+(dev==null?'-':__iso((dev>0?'+':'')+dev+'%')));
@@ -3898,6 +3952,11 @@ function validateAll(){
     const tInt=document.getElementById('f-truck-int')?.value, tFrac=document.getElementById('f-truck-frac')?.value;
     if(iInt===''&&iFrac===''){ errors.push('مبيعات الأفراد'); markErr('f-indiv-int','إلزامى'); }
     if(tInt===''&&tFrac===''){ errors.push('مبيعات Truck'); markErr('f-truck-int','إلزامى'); }
+  } else if(st.parts && st.parts.length){
+    // مبيعات مقسّمة (الحرفيين-1 / الحرفيين-2) — كل خانة إلزامية (والصفر مقبول)
+    st.parts.forEach(function(lbl,i){
+      if(iVal('part-'+i)){ errors.push('مبيعات '+lbl); markErr('part-'+i,'إلزامى'); }
+    });
   } else {
     // الوضع العادى
     if(document.getElementById('f-sales-int')?.value===''&&document.getElementById('f-sales-frac')?.value===''){
