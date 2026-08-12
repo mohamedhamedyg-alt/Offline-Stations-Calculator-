@@ -429,7 +429,7 @@ td.mg-fz2{position:sticky;right:48px;background:#F4F8FC;font-weight:700;text-ali
         <input type="text" class="login-input" id="station-code" placeholder="000" inputmode="numeric" autocomplete="off" maxlength="10" onkeydown="if(event.key==='Enter')doLogin()" style="margin-bottom:10px">
         <button class="btn-login" onclick="doLogin()">دخول</button>
         <div class="login-err" id="login-err">الكود غير صحيح، تأكد وحاول مرة أخرى</div>
-        <div style="text-align:center;margin-top:14px;font-size:12px;color:#64748B;font-weight:800">الإصدار 12 · ✈️ أوفلاين</div>
+        <div style="text-align:center;margin-top:14px;font-size:12px;color:#64748B;font-weight:800">الإصدار 13 · ✈️ أوفلاين</div>
         <!-- أزرار مخفية للتوافق مع الكود القديم -->
         <div style="display:none">
           <button id="btn-mode-station" class="active"></button>
@@ -3275,7 +3275,8 @@ function collectHosesDetailed(){
 }
 // ══════════ التقرير النصى ══════════
 function __rv(id){var e=document.getElementById(id);return e?(''+e.value).trim():'';}
-function __dash(v){v=(v==null?'':(''+v)).trim();if(v==='')return '-';if(/^-?\d*\.?\d+$/.test(v)){var n=Number(v);if(!isNaN(n))return (''+n);}return v;}
+function __num(v){var n=Number(v);return isNaN(n)?(''+v):n.toLocaleString('en-US',{maximumFractionDigits:3});}
+function __dash(v){v=(v==null?'':(''+v)).trim();if(v==='')return '-';if(/^-?\d*\.?\d+$/.test(v)){var n=Number(v);if(!isNaN(n))return __num(n);}return v;}
 function __dayName(dstr){
   if(!dstr)return '-';
   var p=dstr.split('-'); if(p.length<3)return '-';
@@ -3297,8 +3298,8 @@ function __remUnit(id,unit){
   if(/[؀-ۿ]/.test(raw)) return __iso(raw); // نص عربى جاهز مثل "متأخر ..."
   var n=parseFloat((''+raw).replace(/[^0-9.\-]/g,''));
   if(isNaN(n)) return __iso(raw);
-  if(n<0) return 'متأخرة بـ '+__iso(Math.abs(n))+' '+unit;
-  return __iso(n)+' '+unit;
+  if(n<0) return 'متأخرة بـ '+__iso(__num(Math.abs(n)))+' '+unit;
+  return __iso(__num(n))+' '+unit;
 }
 function __remH(id){ return __remUnit(id,'ساعة'); }
 function __remD(id){ return __remUnit(id,'يوم'); }
@@ -3370,7 +3371,7 @@ function buildReportText(){
   }
   g2.push('الكمية التقديرية لفقد المبيعات: '+di('f-loss'));
   var stopLoss=__rv('f-stop-loss');
-  if(stopLoss!=='') g2.push('إجمالى الأمتار المفقودة بسبب توقف المحطة: '+__iso(stopLoss)+' م³');
+  if(stopLoss!=='') g2.push('إجمالى الأمتار المفقودة بسبب توقف المحطة: '+__iso(__num(stopLoss))+' م³');
   g2.push('سبب زيادة المبيعات: '+di('f-high-reason'));
   P.push(g2);
 
