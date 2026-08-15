@@ -429,7 +429,7 @@ td.mg-fz2{position:sticky;right:48px;background:#F4F8FC;font-weight:700;text-ali
         <input type="text" class="login-input" id="station-code" placeholder="000" inputmode="numeric" autocomplete="off" maxlength="10" onkeydown="if(event.key==='Enter')doLogin()" style="margin-bottom:10px">
         <button class="btn-login" onclick="doLogin()">دخول</button>
         <div class="login-err" id="login-err">الكود غير صحيح، تأكد وحاول مرة أخرى</div>
-        <div style="text-align:center;margin-top:14px;font-size:12px;color:#64748B;font-weight:800">الإصدار 14 · ✈️ أوفلاين</div>
+        <div style="text-align:center;margin-top:14px;font-size:12px;color:#64748B;font-weight:800">الإصدار 15 · ✈️ أوفلاين</div>
         <!-- أزرار مخفية للتوافق مع الكود القديم -->
         <div style="display:none">
           <button id="btn-mode-station" class="active"></button>
@@ -811,16 +811,30 @@ td.mg-fz2{position:sticky;right:48px;background:#F4F8FC;font-weight:700;text-ali
           <div class="validation-msg">إلزامى</div>
         </div>
         <div class="form-group" style="margin-bottom:10px">
-          <label><span class="req">*</span> مبيعات الغاز المشحونة للسيارة من الهوزات (م³)</label>
+          <label><span class="req">*</span> مبيعات الغاز المشحونة فى السيارة الـ Mobile Station (م³)</label>
           <input type="number" class="form-control" id="f-mobile-load" min="0" step="0.001" inputmode="decimal" placeholder="0" style="direction:ltr;text-align:center;font-weight:800" oninput="if(this.value<0)this.value=0;calcMobile()">
-          <div style="font-size:11px;color:#9A3412;margin-top:2px">دى بتتحسب ضمن إجمالى المبيعات</div>
+          <div style="font-size:11px;color:#9A3412;margin-top:2px">بتتحسب ضمن إجمالى المبيعات</div>
           <div class="validation-msg">إلزامى</div>
         </div>
-        <div class="form-group">
-          <label><span class="req">*</span> مبيعات الغاز المُباعة من السيارة المتنقلة (م³) — على جنب</label>
-          <input type="number" class="form-control" id="f-mobile-sold" min="0" step="0.001" inputmode="decimal" placeholder="0" style="direction:ltr;text-align:center;font-weight:800">
-          <div style="font-size:11px;color:#9A3412;margin-top:2px">دى منفصلة — مش داخلة فى الإجمالى</div>
+        <div class="form-group" style="margin-bottom:10px">
+          <label><span class="req">*</span> مبيعات الغاز المُباعة من السيارة المتنقلة الـ Mobile Station (م³)</label>
+          <input type="number" class="form-control" id="f-mobile-sold" min="0" step="0.001" inputmode="decimal" placeholder="0" style="direction:ltr;text-align:center;font-weight:800" oninput="if(this.value<0)this.value=0;checkSalesTotal()">
+          <div style="font-size:11px;color:#9A3412;margin-top:2px">بيتحسب عليها إيداع (نقدية + بونات + سمارت)</div>
           <div class="validation-msg">إلزامى</div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>بونات (السيارة المتنقلة)</label>
+            <input type="number" class="form-control" id="f-mobile-bonds" min="0" step="0.01" inputmode="decimal" oninput="checkSalesTotal()" style="direction:ltr">
+          </div>
+          <div class="form-group">
+            <label>سمارت غازتك (السيارة المتنقلة)</label>
+            <input type="number" class="form-control" id="f-mobile-smart-g" min="0" step="0.01" inputmode="decimal" oninput="checkSalesTotal()" style="direction:ltr">
+          </div>
+          <div class="form-group">
+            <label>سمارت كارجاس (السيارة المتنقلة)</label>
+            <input type="number" class="form-control" id="f-mobile-smart-k" min="0" step="0.01" inputmode="decimal" oninput="checkSalesTotal()" style="direction:ltr">
+          </div>
         </div>
       </div>
     </div>
@@ -3158,10 +3172,13 @@ function calcParts(){
 // ══════════ السيارة المتنقلة (Mobile Station) ══════════
 function getMobileLoaded(){ var st=currentStation; if(!st||!st.mobile) return 0; return parseFloat(document.getElementById('f-mobile-load')?.value)||0; }
 function getMobileSold(){ var st=currentStation; if(!st||!st.mobile) return 0; return parseFloat(document.getElementById('f-mobile-sold')?.value)||0; }
+function getMobileBonds(){ var st=currentStation; if(!st||!st.mobile) return 0; return parseFloat(document.getElementById('f-mobile-bonds')?.value)||0; }
+function getMobileSmartG(){ var st=currentStation; if(!st||!st.mobile) return 0; return parseFloat(document.getElementById('f-mobile-smart-g')?.value)||0; }
+function getMobileSmartK(){ var st=currentStation; if(!st||!st.mobile) return 0; return parseFloat(document.getElementById('f-mobile-smart-k')?.value)||0; }
 function setupMobile(){
   var st=currentStation; var mw=document.getElementById('mobile-wrap'); if(!mw) return;
   if(st && st.mobile){ mw.style.display='block'; }
-  else { mw.style.display='none'; ['f-mobile-num','f-mobile-load','f-mobile-sold'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';}); }
+  else { mw.style.display='none'; ['f-mobile-num','f-mobile-load','f-mobile-sold','f-mobile-bonds','f-mobile-smart-g','f-mobile-smart-k'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';}); }
 }
 function calcMobile(){
   if(document.getElementById('f-has-truck')?.value==='yes') calcTruckSales();
@@ -3217,8 +3234,9 @@ function checkSalesTotal(){
   const sg=parseNum(document.getElementById('f-smart-g')?.value)||0;
   const sk=parseNum(document.getElementById('f-smart-k')?.value)||0;
   const hasTruck=document.getElementById('f-has-truck')?.value==='yes';
-  // مبيعات الأفراد: لو ترك = خانة الأفراد، لو لا = المبيعات الإجمالية ناقص السيارة المتنقلة (اللى بلا إيداع)
-  const salesIndividual = hasTruck ? getIndivSalesM3() : (sales - getMobileLoaded());
+  // أساس الإيداع = مبيعات الأفراد + مبيعات الغاز المُباعة من السيارة المتنقلة (الشحن للسيارة والترك بلا إيداع)
+  const _individualsOnly = hasTruck ? getIndivSalesM3() : (sales - getMobileLoaded());
+  const salesIndividual = _individualsOnly + getMobileSold();
   // استحقاق الصندوق = 10 جنيه لكل 100 م³ من مبيعات الأفراد فقط
   const sandoq=salesIndividual>0?(salesIndividual/100*10):0;
   const sandoqEl=document.getElementById('f-sandoq-display');
@@ -3229,7 +3247,7 @@ function checkSalesTotal(){
   if(salesIndividual>0&&price>0){
     // الفعلى = نقدى + بونات + سمارت غازتك + سمارت كارجاس (حتى لو صفر — عشان نمنع إرسال مبيعات بلا إيداع)
     // المتوقع = مبيعات الأفراد × السعر (الترك خارج التحقق — مبيعات بلا إيداع)
-    const exp=salesIndividual*price, act=cash+bonds+sg+sk, diff=act-exp;
+    const exp=salesIndividual*price, act=cash+bonds+sg+sk+getMobileBonds()+getMobileSmartG()+getMobileSmartK(), diff=act-exp;
     const DEPOSIT_TOL=2; // أقصى زيادة مسموح بها فى الإيداع عن قيمة المبيعات (جنيه)
     window.__salesDiff=diff;
     if(Math.abs(diff)<=0.01){el.className='sales-check ok';el.textContent=`✓ متطابق — الإجمالى: ${act.toLocaleString('en-US',{minimumFractionDigits:2})} جنيه | صندوق: ${sandoq.toFixed(2)} جنيه`;}
@@ -3403,8 +3421,8 @@ function buildReportText(){
     var indiv=(typeof getIndivSalesM3==='function')?getIndivSalesM3():0;
     var truck=(typeof getTruckSalesM3==='function')?getTruckSalesM3():0;
     g2.push('مبيعات الأفراد: '+__iso(__dash(indiv))+' م³');
-    g2.push('مبيعات السيارة الناقلة للغاز الطبيعى: '+__iso(__dash(truck))+' م³');
-    if(isMobile) g2.push('مبيعات Mobile Station — سيارة رقم ('+__dash(mNum)+'): '+__iso(__dash(mLoad))+' م³');
+    g2.push('مبيعات الغاز المشحونة فى السيارة الناقلة للغاز الطبيعى (Truck): '+__iso(__dash(truck))+' م³');
+    if(isMobile) g2.push('مبيعات الغاز المشحونة فى السيارة الـ Mobile Station — سيارة رقم ('+__dash(mNum)+'): '+__iso(__dash(mLoad))+' م³');
     g2.push('المبيعات الإجمالية: '+__iso(__dash(totalSales||(indiv+truck+mLoad)))+' م³');
   } else if(st.parts && st.parts.length){
     var _pt=0;
@@ -3412,12 +3430,12 @@ function buildReportText(){
     g2.push('إجمالى المبيعات: '+__iso(__dash(_pt||__rv('f-sales')))+' م³');
   } else if(isMobile){
     g2.push('مبيعات الأفراد: '+__iso(__dash(totalSales-mLoad))+' م³');
-    g2.push('مبيعات Mobile Station — سيارة رقم ('+__dash(mNum)+'): '+__iso(__dash(mLoad))+' م³');
+    g2.push('مبيعات الغاز المشحونة فى السيارة الـ Mobile Station — سيارة رقم ('+__dash(mNum)+'): '+__iso(__dash(mLoad))+' م³');
     g2.push('المبيعات الإجمالية: '+__iso(__dash(totalSales))+' م³');
   } else {
     g2.push('إجمالى المبيعات: '+di('f-sales')+' م³');
   }
-  if(isMobile) g2.push('مبيعات الغاز المُباعة من السيارة المتنقلة (على جنب): '+__iso(__dash(mSold))+' م³');
+  if(isMobile) g2.push('مبيعات الغاز المُباعة من السيارة المتنقلة الـ Mobile Station: '+__iso(__dash(mSold))+' م³');
   g2.push('الكمية التقديرية لفقد المبيعات: '+di('f-loss'));
   var stopLoss=__rv('f-stop-loss');
   if(stopLoss!=='') g2.push('إجمالى الأمتار المفقودة بسبب توقف المحطة: '+__iso(__num(stopLoss))+' م³');
@@ -3425,11 +3443,17 @@ function buildReportText(){
   P.push(g2);
 
   // ③ الإيداع والبونات والسمارت
-  P.push([ '*💰 الإيداع والبونات والسمارت*',
+  var g3=[ '*💰 الإيداع والبونات والسمارت*',
     'الإيداع النقدى: '+di('f-cash')+' جنيه',
     'بونات: '+di('f-bonds')+' جنيه',
     'سمارت غازتك: '+di('f-smart-g')+' جنيه',
-    'سمارت كارجاس: '+di('f-smart-k')+' جنيه' ]);
+    'سمارت كارجاس: '+di('f-smart-k')+' جنيه' ];
+  if(isMobile){
+    g3.push('بونات (السيارة المتنقلة): '+di('f-mobile-bonds')+' جنيه');
+    g3.push('سمارت غازتك (السيارة المتنقلة): '+di('f-mobile-smart-g')+' جنيه');
+    g3.push('سمارت كارجاس (السيارة المتنقلة): '+di('f-mobile-smart-k')+' جنيه');
+  }
+  P.push(g3);
 
   // ④ تشغيل الضواغط والحيود
   var g4=['*⏱️ تشغيل الضواغط والحيود*'];
