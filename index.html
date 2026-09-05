@@ -429,7 +429,7 @@ td.mg-fz2{position:sticky;right:48px;background:#F4F8FC;font-weight:700;text-ali
         <input type="text" class="login-input" id="station-code" placeholder="000" inputmode="numeric" autocomplete="off" maxlength="10" onkeydown="if(event.key==='Enter')doLogin()" style="margin-bottom:10px">
         <button class="btn-login" onclick="doLogin()">دخول</button>
         <div class="login-err" id="login-err">الكود غير صحيح، تأكد وحاول مرة أخرى</div>
-        <div style="text-align:center;margin-top:14px;font-size:12px;color:#64748B;font-weight:800">الإصدار 18 · ✈️ أوفلاين</div>
+        <div style="text-align:center;margin-top:14px;font-size:12px;color:#64748B;font-weight:800">الإصدار 19 · ✈️ أوفلاين</div>
         <!-- أزرار مخفية للتوافق مع الكود القديم -->
         <div style="display:none">
           <button id="btn-mode-station" class="active"></button>
@@ -3046,6 +3046,12 @@ function calcLive(){
   const kwhInd = parseNum(document.getElementById('f-kwh-ind')?.value)||0;
   const kwhCom = parseNum(document.getElementById('f-kwh-com')?.value)||0;
   const kvarh  = parseNum(document.getElementById('f-kvarh')?.value)||0;
+  // عداد الضاغط B (المحطات بعدادين — صلاح نسيم): كل ضاغط له PF لوحده، لكن KWH/م³ على مجموع العدادين ÷ إجمالى المبيعات
+  const _m2 = !!(currentStation && currentStation.meters2);
+  const kwhIndB = _m2 ? (parseNum(document.getElementById('f-kwh-ind-b')?.value)||0) : 0;
+  const kwhComB = _m2 ? (parseNum(document.getElementById('f-kwh-com-b')?.value)||0) : 0;
+  const kvarhB  = _m2 ? (parseNum(document.getElementById('f-kvarh-b')?.value)||0) : 0;
+  const kwhIndTot = kwhInd + kwhIndB, kwhComTot = kwhCom + kwhComB;
   // المبيعات: محطة الـ Mobile Station = أفراد + بحرية + Mobile(المشحون)، وضع الترك = أفراد+ترك، العادى = الخانة العادية + السيارة المتنقلة
   const _stMobLC = currentStation && currentStation.mobile;
   const hasTruckLC = document.getElementById('f-has-truck')?.value==='yes';
@@ -3059,18 +3065,28 @@ function calcLive(){
   checkStationStopped();
 
   const lc = document.getElementById('live-calc');
-  if(kwhInd<=0 && kwhCom<=0){ lc.className='live-calc'; return; }
+  if(kwhIndTot<=0 && kwhComTot<=0){ lc.className='live-calc'; return; }
 
   // ── Power Factor — الكهرباء الفعّالة (صناعى لو موجود، وإلا تجارى) + KVARH ──
   const kwhForPF = kwhInd > 0 ? kwhInd : kwhCom;
   const isCommercialOnly = (kwhInd<=0 && kwhCom>0);
   const kva = (kwhForPF>0 && kvarh>0) ? Math.sqrt(kwhForPF*kwhForPF + kvarh*kvarh) : kwhForPF;
   const pf  = kva > 0 ? kwhForPF/kva : 0;
-  document.getElementById('lc-pf').textContent = pf>0 ? (pf*100).toFixed(1)+'%' : '—';
+  // PF الضاغط B (لو المحطة بعدادين)
+  const kwhForPFB = kwhIndB > 0 ? kwhIndB : kwhComB;
+  const kvaB = (kwhForPFB>0 && kvarhB>0) ? Math.sqrt(kwhForPFB*kwhForPFB + kvarhB*kvarhB) : kwhForPFB;
+  const pfB = kvaB > 0 ? kwhForPFB/kvaB : 0;
+  document.getElementById('lc-pf').textContent = _m2
+    ? ('A: '+(pf>0?(pf*100).toFixed(1)+'%':'—')+'  ·  B: '+(pfB>0?(pfB*100).toFixed(1)+'%':'—'))
+    : (pf>0 ? (pf*100).toFixed(1)+'%' : '—');
 
-  // ── KWH/م³ — صناعى فقط ──
-  const kwhPerM3 = (sales>0 && kwhInd>0) ? kwhInd/sales : 0;
-  document.getElementById('lc-cost').textContent = kwhPerM3>0 ? kwhPerM3.toFixed(3)+' KWH/م³' : '—';
+  // ── استهلاك المتر المكعب من الكهرباء (KWH/م³) — على مجموع العدادين ÷ إجمالى المبيعات؛ صناعى، ولو مفيش صناعى → تجارى ──
+  const _kwhForCost = kwhIndTot>0 ? kwhIndTot : kwhComTot;
+  const kwhPerM3 = (sales>0 && _kwhForCost>0) ? _kwhForCost/sales : 0;
+  document.getElementById('lc-cost').textContent = kwhPerM3>0 ? (kwhPerM3.toFixed(3)+' KWH/م³'+(kwhIndTot>0?'':' (تجارى)')) : (sales>0?'—':'أدخل المبيعات');
+  // ملاحظة عداد B: PF + حافز/غرامة الضاغط B
+  const _pfbn=document.getElementById('pf-b-note');
+  if(_pfbn){ if(_m2 && kwhForPFB>0){ const _incB=pfIncentive(pfB, kwhForPFB, (kwhIndB>0?(window.__tariffInd||2.74):(window.__tariffCom||2.79))); _pfbn.textContent='PF الضاغط B: '+(pfB>0?(pfB*100).toFixed(1)+'%':'—')+' — '+(_incB.txt||''); } else _pfbn.textContent=''; }
 
   // ── حافز/غرامة PF — المعادلات الرسمية الموحّدة ──
   // التعريفة: تجارى فقط → تجارى، غير كده → صناعى
@@ -3085,9 +3101,9 @@ function calcLive(){
 
   // حفظ للإرسال
   const tRateInd = window.__tariffInd||2.74, tRateCom = window.__tariffCom||2.79;
-  const totalElecLE = (kwhInd*tRateInd) + (kwhCom*tRateCom);
-  const costPerM3   = (sales>0 && kwhInd>0) ? (kwhInd*tRateInd)/sales : 0;
-  window._liveCalc  = {pf, kwhForPF, kwhInd, kwhCom, kvarh, totalElecLE, costPerM3, kwhPerM3};
+  const totalElecLE = (kwhIndTot*tRateInd) + (kwhComTot*tRateCom);
+  const costPerM3   = (sales>0 && kwhIndTot>0) ? (kwhIndTot*tRateInd)/sales : ((sales>0 && kwhComTot>0) ? (kwhComTot*tRateCom)/sales : 0);
+  window._liveCalc  = {pf, pfB, kwhForPF, kwhInd, kwhCom, kvarh, kwhIndB, kwhComB, kvarhB, totalElecLE, costPerM3, kwhPerM3};
   lc.className = 'live-calc show';
 }
 // ══════════ معادلة الحافز/الغرامة الموحّدة (البيان اليومى + التضامن) ══════════
@@ -3627,6 +3643,7 @@ function buildReportText(){
   g2.push('الكمية التقديرية لفقد المبيعات: '+di('f-loss'));
   var stopLoss=__rv('f-stop-loss');
   if(stopLoss!=='') g2.push('إجمالى الأمتار المفقودة بسبب توقف المحطة: '+__iso(__num(stopLoss))+' م³');
+  g2.push('سبب انخفاض المبيعات: '+di('f-low-reason'));
   g2.push('سبب زيادة المبيعات: '+di('f-high-reason'));
   P.push(g2);
 
@@ -3670,10 +3687,27 @@ function buildReportText(){
 
   // ⑥ الكهرباء والباور فاكتور
   var pf=window.__reportPF;
-  P.push([ '*⚡ الكهرباء والباور فاكتور*',
-    'الكهرباء الفعالة: '+(meterInner?'-':di('f-kwh-ind')),
-    'الكهرباء غير الفعالة: '+(meterInner?'-':di('f-kvarh')),
-    'الباور فاكتور: '+((pf==null||isNaN(pf))?'-':__iso((Math.round(pf*1000)/10)+'%')) ]);
+  var _pfTxt=function(v){ return (v==null||isNaN(v)||!(v>0))?'-':__iso((Math.round(v*1000)/10)+'%'); };
+  var _pfOf=function(kwh,kv){ kwh=parseFloat(kwh)||0; kv=parseFloat(kv)||0; if(!(kwh>0)) return null; return kv>0? kwh/Math.sqrt(kwh*kwh+kv*kv) : 1; };
+  var _kA=parseNum(__rv('f-kwh-ind'))||0, _kvA=parseNum(__rv('f-kvarh'))||0, _kcA=parseNum(__rv('f-kwh-com'))||0;
+  var _kB=st.meters2?(parseNum(__rv('f-kwh-ind-b'))||0):0, _kvB=st.meters2?(parseNum(__rv('f-kvarh-b'))||0):0, _kcB=st.meters2?(parseNum(__rv('f-kwh-com-b'))||0):0;
+  var _kTot=_kA+_kB, _kcTot=_kcA+_kcB;
+  var _salesForKwh=parseFloat(__rv('f-sales'))||0;
+  var _kwhM3=(_salesForKwh>0)? ((_kTot>0)?_kTot/_salesForKwh:((_kcTot>0)?_kcTot/_salesForKwh:null)) : null;
+  var g6=['*⚡ الكهرباء والباور فاكتور*'];
+  if(meterInner){
+    g6.push('الكهرباء الفعالة: -','الكهرباء غير الفعالة: -','الباور فاكتور: -');
+  } else if(st.meters2){
+    g6.push('عداد الضاغط A — الفعالة: '+di('f-kwh-ind')+' | غير الفعالة: '+di('f-kvarh')+' | الباور فاكتور: '+_pfTxt(_pfOf(_kA,_kvA)));
+    g6.push('عداد الضاغط B — الفعالة: '+di('f-kwh-ind-b')+' | غير الفعالة: '+di('f-kvarh-b')+' | الباور فاكتور: '+_pfTxt(_pfOf(_kB,_kvB)));
+    g6.push('إجمالى الكهرباء الفعالة (A+B): '+__iso(__num(_kTot))+' KWH');
+  } else {
+    g6.push('الكهرباء الفعالة: '+di('f-kwh-ind'));
+    g6.push('الكهرباء غير الفعالة: '+di('f-kvarh'));
+    g6.push('الباور فاكتور: '+_pfTxt((pf==null||isNaN(pf))?_pfOf(_kA,_kvA):pf));
+  }
+  g6.push('استهلاك المتر المكعب من الكهرباء: '+(_kwhM3==null?'-':__iso(_kwhM3.toFixed(3)+' KWH/م³'+((_kTot>0||meterInner)?'':' (تجارى)'))));
+  P.push(g6);
 
   // 💧 المياه
   P.push([ '*💧 استهلاك المياه*',
@@ -4975,7 +5009,8 @@ async function submitForm(){
   } else {flowDevEl.textContent='لا ينطبق';flowDevEl.style.color='var(--gray-mid)';}
   const pfEl=document.getElementById('d-pf');
   if(pf!==null){
-    pfEl.textContent=fmtEn(pf*100,1)+'%';
+    // محطة بعدادين: نعرض PF لكل ضاغط (A / B) فى صورة الملخص
+    pfEl.textContent = (st.meters2 && window.__pfB) ? ('A '+fmtEn(pf*100,1)+'% · B '+fmtEn(parseFloat(window.__pfB)*100,1)+'%') : (fmtEn(pf*100,1)+'%');
     pfEl.className='kpi-val '+(pf>=0.92?'ok':pf>=0.70?'warn':'bad');
     // "حافز/غرامة: رقم جنيه" — الكلمات العربية نصوص عادية (تشكيل سليم زى الليبل)، والرقم وحده
     // داخل span مضمّن (inline) معزول اتجاهياً بـCSS فقط — بدون display:inline-block (الذى كان
