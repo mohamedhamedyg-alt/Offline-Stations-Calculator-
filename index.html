@@ -1079,8 +1079,19 @@ td.mg-fz2{position:sticky;right:48px;background:#F4F8FC;font-weight:700;text-ali
 <div class="container">
   <div style="background:var(--green);border-radius:var(--radius);padding:14px 18px;margin-bottom:14px;text-align:center;color:white">
     <div style="font-size:24px;margin-bottom:4px">✓</div>
-    <div style="font-size:15px;font-weight:800">تم إرسال البيانات بنجاح</div>
+    <div style="font-size:15px;font-weight:800">✓ اتحفظ البيان على التليفون (أوفلاين)</div>
+    <div style="font-size:11px;opacity:0.9;margin-top:3px">لم يُرسل أى شىء لأى سيرفر — البيانات على هذا التليفون فقط</div>
     <div style="font-size:11px;opacity:0.85;margin-top:3px" id="dash-sub"></div>
+  </div>
+  <div id="phone-report-panel" style="background:#fff;border:2px solid #F59E0B;border-radius:12px;padding:12px;margin-bottom:14px">
+    <div style="font-size:14px;font-weight:800;color:#0D2B4E;margin-bottom:4px">📋 نص البيان — انسخه وابعته واتساب كالمعتاد</div>
+    <div id="phone-report-hint" style="font-size:11.5px;color:#64748B;font-weight:700;margin-bottom:8px">—</div>
+    <textarea id="phone-report-text" readonly style="width:100%;min-height:220px;border:1.5px solid #D1E3F0;border-radius:8px;padding:10px;font-family:Cairo,sans-serif;font-size:13px;line-height:1.7;direction:rtl;background:#F8FAFC"></textarea>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+      <button id="phone-copy-btn" onclick="phoneCopyText()" style="flex:1;min-width:120px;background:#166534;color:#fff;border:none;border-radius:10px;padding:11px;font-family:Cairo;font-weight:800;font-size:14px;cursor:pointer">📋 نسخ النص</button>
+      <button onclick="phoneShareText()" style="flex:1;min-width:120px;background:#1A4A7A;color:#fff;border:none;border-radius:10px;padding:11px;font-family:Cairo;font-weight:800;font-size:14px;cursor:pointer">📲 مشاركة النص</button>
+      <button onclick="phoneExportToday()" style="flex:1;min-width:120px;background:#B45309;color:#fff;border:none;border-radius:10px;padding:11px;font-family:Cairo;font-weight:800;font-size:14px;cursor:pointer">📊 ملف الإكسيل (كل البيانات)</button>
+    </div>
   </div>
   <div id="dashboard-capture" style="background:#fff">
   <div id="d-capture-header" style="display:none;flex-direction:column;background:linear-gradient(135deg,#1A4A7A,#2E6BA8);padding:13px 18px;border-radius:12px;margin-bottom:9px">
@@ -4782,7 +4793,7 @@ async function submitForm(){
   const _ok=()=>{
     if(_verifyDone)return; _verifyDone=true;
     if(sendBtn){sendBtn.disabled=false;sendBtn.textContent=oldBtnTxt;}
-    showSendBanner('ok','تم إرسال البيان بنجاح وتأكيد وصوله ✓');
+    showSendBanner('ok','✓ اتحفظ البيان على التليفون — بدون إنترنت وبدون أى إرسال لسيرفر. انسخ النص وابعته واتساب');
     window.__showDash();
   };
   function _softConfirm(msg){
@@ -9086,7 +9097,7 @@ function saveOutbox(){ // نحتفظ بآخر 60 يوم فقط
 function dayOf(type, p){ if(type==='tadamon') return OfficeAPI.normDate(p.cur_date); if(type==='calib'||type==='calib_batch'||type==='station_defaults'||type==='calibConfig') return OfficeAPI.todayStr(); return OfficeAPI.normDate(p.date)||OfficeAPI.todayStr(); }
 // كل ما المشرف يضغط «إرسال» فى أى شاشة، البيان يتسجل محلياً + يدخل صندوق الصادر
 OfficeAPI.hooks.onPost=function(d, r){
-  const t=d.type||'daily'; if(['salesPlan','salesAch','convPlan','convAch','calibConfigBulk','wipe_doc','calib_delete'].indexOf(t)>=0) return;
+  const t=d.type||'daily'; if(t==='daily'){ window.__phoneLastDaily=d; window.__phoneReportFilled=false; } if(['salesPlan','salesAch','convPlan','convAch','calibConfigBulk','wipe_doc','calib_delete'].indexOf(t)>=0) return;
   const key = t==='daily' ? ('daily|'+d.code+'|'+OfficeAPI.normDate(d.date)) : (t==='fire_safety' ? ('fire|'+d.code+'|'+OfficeAPI.normDate(d.date)) : (t==='tadamon' ? ('tad|'+d.code+'|'+OfficeAPI.normDate(d.cur_date)) : (t==='conversion' ? ('conv|'+OfficeAPI.normDate(d.date)) : (t==='station_defaults' ? ('def|'+d.code) : (t==='calibConfig' ? ('cfg|'+d.code) : (t+'|'+Date.now()))))));
   const entry={key, type:t, day:dayOf(t,d), at:new Date().toISOString(), sent:false, payload:d};
   const i=outbox.findIndex(e=>e.key===key && !e.sent); if(i>=0) outbox[i]=entry; else outbox.push(entry);
@@ -9129,8 +9140,39 @@ window.phoneExport=async function(onlyDay){
 };
 window.phoneExportDay=function(){ const d=prompt('اكتب تاريخ اليوم المطلوب إعادة إرساله (yyyy-mm-dd):', OfficeAPI.todayStr()); if(!d) return; phoneExport(OfficeAPI.normDate(d)); };
 window.phoneHistory=function(){ const byDay={}; outbox.forEach(e=>{ (byDay[e.day]=byDay[e.day]||[]).push(e); }); const days=Object.keys(byDay).sort().reverse(); if(!days.length){ alert('لا توجد بيانات مسجّلة بعد'); return; } alert('آخر الأيام المسجّلة:\n'+days.slice(0,20).map(d=>d+' — '+byDay[d].length+' بيان '+(byDay[d].every(e=>e.sent)?'✓ أُرسل':'⏳ لم يُرسل')).join('\n')); };
-// الشريط السفلى يظهر بعد الدخول
-function tick(){ const bar=$('phone-bar'); if(!bar) return; const login=$('login-screen'); const loggedIn = login && login.style.display==='none'; bar.style.display = loggedIn ? 'flex' : 'none'; if(loggedIn) refreshBar(); }
+// ── نص البيان اليومى (نفس فكرة رسالة الأوفلاين — ينسخه المشرف ويبعته واتساب كالمعتاد) ──
+const _f=(v,dec)=>{ const n=parseFloat(v); if(isNaN(n)) return ''; return n.toLocaleString('en-US',{maximumFractionDigits:(dec==null?2:dec)}); };
+const _has=v=>v!=null && v!=='' && !(typeof v==='number' && v===0) && String(v)!=='0';
+window.phoneBuildText=function(d){
+  if(!d) return ''; const L=[]; const add=s=>{ if(s) L.push(s); };
+  add('📋 البيان اليومى — '+(d.name||'')+' ('+(d.code||'')+')');
+  add('📅 '+(d.date||'')+(d.sent_time?('  ⏰ '+d.sent_time):''));
+  add('━━━━━━━━━━━━━━');
+  let sales='⛽ المبيعات: '+_f(d.sales)+' م³'; if(d.has_truck==1||d.has_truck==='1') sales+=' (أفراد '+_f(d.individual_sales)+' · شاحنة '+_f(d.truck_sales)+')'; add(sales);
+  const dep=[]; if(_has(d.cash)) dep.push('نقدى '+_f(d.cash)+' ج'); if(_has(d.bonds)) dep.push('بونات '+_f(d.bonds)+' ج'); if(_has(d.smart_g)) dep.push('سمارت غازتك '+_f(d.smart_g)); if(_has(d.smart_k)) dep.push('سمارت كارجاس '+_f(d.smart_k)); if(_has(d.truck_bonus)) dep.push('قيمة الشاحنة '+_f(d.truck_bonus)+' ج'); if(_has(d.sandoq)) dep.push('استحقاق الصندوق '+_f(d.sandoq)+' ج'); if(dep.length) add('💰 الإيداع: '+dep.join(' · '));
+  if(_has(d.loss)) add('📉 فقد المبيعات: '+_f(d.loss)+' م³');
+  const el=[]; if(_has(d.kwh_ind)) el.push('صناعى '+_f(d.kwh_ind,0)+' ك.و.س'); if(_has(d.kwh_com)) el.push('تجارى '+_f(d.kwh_com,0)+' ك.و.س'); if(_has(d.kvarh)) el.push('KVARH '+_f(d.kvarh,0)); if(_has(d.kwh_ind_b)||_has(d.kvarh_b)) el.push('عداد B: '+_f(d.kwh_ind_b,0)+' ك.و.س / KVARH '+_f(d.kvarh_b,0)); if(el.length) add('⚡ الكهرباء: '+el.join(' · '));
+  const s=parseFloat(d.sales)||0; const kwh=((parseFloat(d.kwh_ind)||0)+(parseFloat(d.kwh_ind_b)||0))||(parseFloat(d.kwh_com)||0); const ind=[]; if(s>0&&kwh>0) ind.push('استهلاك المتر المكعب '+(kwh/s).toFixed(2)+' ك.و.س/م³'); if(_has(d.pf)) ind.push('معامل القدرة '+(parseFloat(d.pf)<=1?(parseFloat(d.pf)*100).toFixed(1):_f(d.pf,1))+'%'+(d.pf_status?' ('+d.pf_status+')':'')); if(_has(d.flow_actual)) ind.push('معدل التدفق '+_f(d.flow_actual,0)+' م³/س'); if(ind.length) add('📊 '+ind.join(' · '));
+  [['c1','الضاغط 1'],['c2','الضاغط 2']].forEach(([pre,lbl])=>{ if(!d[pre+'_name']) return; const a=[]; a.push(lbl+' ('+d[pre+'_name']+(d[pre+'_model']?' '+d[pre+'_model']:'')+')'); const h=[]; if(_has(d[pre+'_th'])) h.push('كلية '+_f(d[pre+'_th'])+' س'); if(_has(d[pre+'_tf'])) h.push('فعلية '+_f(d[pre+'_tf'])+' س'); if(_has(d[pre+'_starts'])) h.push('تشغيلات '+_f(d[pre+'_starts'],0)); if(_has(d[pre+'_inlet'])) h.push('ضغط دخول '+_f(d[pre+'_inlet'])); if(h.length) a.push(h.join(' · ')); add('🔧 '+a.join(': '));
+    const o=[]; if(d[pre+'_oil_type']) o.push(d[pre+'_oil_type']); if(_has(d[pre+'_oil_cons'])) o.push('استهلاك '+_f(d[pre+'_oil_cons'])+' ل'+(d[pre+'_oil_cons_type']?' ('+d[pre+'_oil_cons_type']+')':'')); if(_has(d[pre+'_oil_bal'])) o.push('رصيد '+_f(d[pre+'_oil_bal'])+' ل'); if(d[pre+'_oil2_type']&&(_has(d[pre+'_oil2_cons'])||_has(d[pre+'_oil2_bal']))) o.push('زيت ثانى '+d[pre+'_oil2_type']+': استهلاك '+_f(d[pre+'_oil2_cons'])+' · رصيد '+_f(d[pre+'_oil2_bal'])); if(o.length) add('   🛢 زيت: '+o.join(' · '));
+    if(d[pre+'_goil_type']&&(_has(d[pre+'_goil_cons'])||_has(d[pre+'_goil_bal']))) add('   🛢 زيت المحرك: '+d[pre+'_goil_type']+' · استهلاك '+_f(d[pre+'_goil_cons'])+' ل · رصيد '+_f(d[pre+'_goil_bal'])+' ل');
+    const m=[]; if(d[pre+'_maint_next']) m.push('الصيانة القادمة '+d[pre+'_maint_next']+(_has(d[pre+'_maint_rem'])?' (باقى '+_f(d[pre+'_maint_rem'],0)+' س)':'')); if(_has(d[pre+'_lube_rem'])) m.push('التشحيم باقى '+_f(d[pre+'_lube_rem'],0)+' س'); if(d[pre+'_gm_next']) m.push('صيانة المحرك '+d[pre+'_gm_next']+(_has(d[pre+'_gm_rem'])?' (باقى '+_f(d[pre+'_gm_rem'],0)+' س)':'')); if(m.length) add('   🔩 '+m.join(' · ')); });
+  if(d.is_stopped==1||d.is_stopped==='1') add('⛔ المحطة متوقفة: '+(d.stop_reason||'')+(d.stop_fault_desc?' — '+d.stop_fault_desc:'')+(d.stop_fault_status?' — '+d.stop_fault_status:''));
+  const st=[]; if(_has(d.total_downtime)) st.push('إجمالى التوقف '+d.total_downtime); if(d.stop_box) st.push(d.stop_box); else if(d.stop_ar) st.push(d.stop_ar); if(d.supervisor_action) st.push('الإجراء: '+d.supervisor_action); if(st.length) add('🛑 التوقفات: '+st.join(' — ')); if(d.purge_box) add('🔌 خارج الإرادة: '+d.purge_box+(d.purge_downtime?' ('+d.purge_downtime+')':''));
+  if(_has(d.hoses_count)) add('🔗 هوزات متوقفة: '+d.hoses_count+(d.hoses_stopped?' ('+d.hoses_stopped+')':''));
+  if(d.low_reason) add('📉 سبب الانخفاض: '+d.low_reason); if(d.high_reason) add('📈 سبب الزيادة: '+d.high_reason);
+  const w=[]; if(_has(d.w_drink)) w.push('شرب '+_f(d.w_drink)+' م³'); if(_has(d.w_fire)) w.push('حريق '+_f(d.w_fire)+' م³'); if(w.length) add('💧 المياه: '+w.join(' · '));
+  if(d.safety_date) add('🛡 فحص معدات الأمان: '+d.safety_date+(_has(d.safety_rem)?' (باقى '+_f(d.safety_rem,0)+' يوم)':''));
+  if(d.notes) add('📝 ملاحظات: '+d.notes);
+  add('━━━━━━━━━━━━━━'); add('✅ مسجّل على تليفون المحطة — بدون إرسال لأى سيرفر');
+  return L.join('\n');
+};
+window.phoneFillReport=function(){ const ta=$('phone-report-text'); const d=window.__phoneLastDaily; if(!ta||!d) return; ta.value=phoneBuildText(d); window.__phoneReportFilled=true; const h=$('phone-report-hint'); if(h) h.textContent='نفس بنود بيان يوم '+(d.date||'')+' — انسخه وابعته واتساب زى ما بتعمل عادةً. كل الأرقام بالتفصيل فى ملف الإكسيل من الزرار البرتقانى.'; };
+window.phoneCopyText=async function(){ const ta=$('phone-report-text'); if(!ta||!ta.value) return; try{ await navigator.clipboard.writeText(ta.value); }catch(e){ ta.focus(); ta.select(); try{ document.execCommand('copy'); }catch(x){} } const b=$('phone-copy-btn'); if(b){ const o=b.textContent; b.textContent='✅ اتنسخ'; setTimeout(()=>{ b.textContent=o; },2000); } };
+window.phoneShareText=async function(){ const ta=$('phone-report-text'); if(!ta||!ta.value) return; if(navigator.share){ try{ await navigator.share({text:ta.value}); return; }catch(e){} } phoneCopyText(); alert('اتنسخ النص — افتح واتساب والصقه'); };
+window.phoneExportToday=function(){ const d=window.__phoneLastDaily; phoneExport(d?OfficeAPI.normDate(d.date):undefined); };
+
+function tick(){ const bar=$('phone-bar'); if(!bar) return; const login=$('login-screen'); const loggedIn = login && login.style.display==='none'; bar.style.display = loggedIn ? 'flex' : 'none'; if(loggedIn) refreshBar(); const ds=$('dashboard-screen'); if(ds && ds.style.display==='block' && window.__phoneLastDaily && !window.__phoneReportFilled) phoneFillReport(); }
 setInterval(tick, 800);
 OfficeAPI.Store.ready.then(refreshBar);
 })();
