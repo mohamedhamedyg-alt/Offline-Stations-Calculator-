@@ -1,70 +1,9 @@
-// Service Worker — آلة حاسبة المحطات (أوفلاين)
-// يخزّن التطبيق كامل أول مرة، وبعدها يشتغل من غير نت نهائياً.
-const CACHE = 'canal-app-v19';
-const ASSETS = [
-  './',
-  './index.html',
-  './manifest.webmanifest',
-  './icon-192.png',
-  './icon-512.png',
-  './icon-180.png'
-];
-
-self.addEventListener('install', function (e) {
-  self.skipWaiting();
-  e.waitUntil(
-    caches.open(CACHE).then(function (c) {
-      // نخزّن كل أصل لوحده حتى لو فشل واحد ما يوقّفش الباقى
-      return Promise.all(ASSETS.map(function (u) {
-        return c.add(u).catch(function () {});
-      }));
-    })
-  );
-});
-
-self.addEventListener('activate', function (e) {
-  e.waitUntil(
-    caches.keys().then(function (keys) {
-      return Promise.all(keys.map(function (k) {
-        if (k !== CACHE) return caches.delete(k);
-      }));
-    }).then(function () { return self.clients.claim(); })
-  );
-});
-
-self.addEventListener('fetch', function (e) {
-  var req = e.request;
-  // نتعامل فقط مع طلبات GET من نفس الأصل (التطبيق نفسه)
-  if (req.method !== 'GET') return;
-  var url = new URL(req.url);
-  if (url.origin !== self.location.origin) return; // أى نداء خارجى يعدّى عادى
-
-  // للتنقّل (فتح الصفحة): النت أولاً وانت أونلاين (عشان التحديثات توصل فورًا)،
-  // ولو مفيش نت نرجع للنسخة المخزّنة (أوفلاين)
-  if (req.mode === 'navigate') {
-    e.respondWith(
-      fetch(req).then(function (resp) {
-        var copy = resp.clone();
-        caches.open(CACHE).then(function (c) { c.put('./index.html', copy); });
-        return resp;
-      }).catch(function () {
-        return caches.match('./index.html').then(function (h) { return h || caches.match(req); });
-      })
-    );
-    return;
-  }
-
-  // باقى الأصول: الكاش أولاً، ولو مش موجود نجيبه من النت ونخزّنه
-  e.respondWith(
-    caches.match(req).then(function (r) {
-      if (r) return r;
-      return fetch(req).then(function (resp) {
-        if (resp && resp.status === 200 && resp.type === 'basic') {
-          var copy = resp.clone();
-          caches.open(CACHE).then(function (c) { c.put(req, copy); });
-        }
-        return resp;
-      }).catch(function () { return r; });
-    })
-  );
-});
+// غازتك — نسخة المحطة (تحديث برنامج الأوفلاين): تعمل بدون إنترنت + تحديث تلقائى عند توفر نسخة أحدث
+const CACHE='canal-app-v20';
+self.addEventListener('install',e=>{ self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./','./index.html']).catch(()=>{}))); });
+self.addEventListener('activate',e=>{ e.waitUntil((async()=>{ const ks=await caches.keys(); await Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k))); await self.clients.claim();
+  // الصفحات المفتوحة بالنسخة القديمة تُعاد تحميلها فوراً بالنسخة الجديدة
+  const cls=await self.clients.matchAll({type:'window'}); for(const c of cls){ try{ if('navigate' in c) await c.navigate(c.url); }catch(e){} } })()); });
+self.addEventListener('fetch',e=>{ if(e.request.method!=='GET') return; const u=new URL(e.request.url);
+  if(u.origin===location.origin){ e.respondWith(fetch(e.request).then(r=>{ const cp=r.clone(); caches.open(CACHE).then(c=>c.put(e.request,cp)); return r; }).catch(()=>caches.match(e.request).then(m=>m||caches.match('./index.html')))); }
+  else { e.respondWith(caches.match(e.request).then(m=>m||fetch(e.request).then(r=>{ const cp=r.clone(); caches.open(CACHE).then(c=>c.put(e.request,cp)); return r; }).catch(()=>new Response('',{status:503})))); } });
