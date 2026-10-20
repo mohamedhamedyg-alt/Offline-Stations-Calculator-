@@ -1,5 +1,5 @@
 // غازتك — نسخة المحطة (تحديث برنامج الأوفلاين): تعمل بدون إنترنت + تحديث تلقائى عند توفر نسخة أحدث
-const CACHE='canal-app-v21';
+const CACHE='canal-app-v23';
 self.addEventListener('install',e=>{ self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./','./index.html']).catch(()=>{}))); });
 self.addEventListener('activate',e=>{ e.waitUntil((async()=>{ const ks=await caches.keys(); await Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k))); await self.clients.claim();
   // الصفحات المفتوحة بالنسخة القديمة تُعاد تحميلها فوراً بالنسخة الجديدة

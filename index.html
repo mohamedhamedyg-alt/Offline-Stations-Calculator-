@@ -538,7 +538,7 @@ td.mg-fz2{position:sticky;right:48px;background:#F4F8FC;font-weight:700;text-ali
       <input type="date" class="form-control" id="fire-date" style="direction:ltr;font-weight:700">
     </div>
     <div id="fire-items"></div>
-    <button onclick="submitFireSafety()" style="width:100%;background:linear-gradient(135deg,#B91C1C,#DC2626);color:#fff;border:none;border-radius:8px;padding:12px;font-family:Cairo;font-weight:800;font-size:14px;cursor:pointer;margin-top:8px">إرسال بيان منظومات الحريق</button>
+    <button onclick="submitFireSafety()" style="width:100%;background:linear-gradient(135deg,#B91C1C,#DC2626);color:#fff;border:none;border-radius:8px;padding:12px;font-family:Cairo;font-weight:800;font-size:14px;cursor:pointer;margin-top:8px">💾 حفظ بيان منظومات الحريق على التليفون</button>
     <div id="fire-status" style="text-align:center;font-size:12px;font-weight:700;margin-top:8px"></div>
   </div>
   </div><!-- /tab-fire -->
@@ -720,7 +720,7 @@ td.mg-fz2{position:sticky;right:48px;background:#F4F8FC;font-weight:700;text-ali
       <div style="display:flex;justify-content:space-between;font-size:15px;padding:6px 0;border-top:1px solid rgba(255,255,255,.2);margin-top:3px"><span>معامل القدرة (PF):</span><span id="tad-pf" style="font-weight:800;direction:ltr">—</span></div>
       <div id="tad-pf-status" style="text-align:center;font-weight:800;font-size:14px;padding:8px;border-radius:8px;margin-top:6px;background:rgba(255,255,255,.15)">—</div>
     </div>
-    <button onclick="submitTadamon()" style="width:100%;background:linear-gradient(135deg,#0369A1,#0EA5E9);color:#fff;border:none;border-radius:8px;padding:12px;font-family:Cairo;font-weight:800;font-size:14px;cursor:pointer">إرسال محضر التضامن</button>
+    <button onclick="submitTadamon()" style="width:100%;background:linear-gradient(135deg,#0369A1,#0EA5E9);color:#fff;border:none;border-radius:8px;padding:12px;font-family:Cairo;font-weight:800;font-size:14px;cursor:pointer">💾 حفظ محضر التضامن على التليفون</button>
     <div id="tadamon-status" style="text-align:center;font-size:12px;font-weight:700;margin-top:8px"></div>
   </div>
   </div><!-- /tab-tadamon -->
@@ -1067,7 +1067,7 @@ td.mg-fz2{position:sticky;right:48px;background:#F4F8FC;font-weight:700;text-ali
     <div style="background:#F0FDFA;border:1px solid #99F6E4;border-radius:10px;padding:9px 13px;margin-bottom:10px;font-size:12px;font-weight:700;color:#0F766E">📊 قراءات المراحل (ضغوط · نِسب تلقائى · حرارات · زيت · مياه · أخرى) — كل ضاغط لوحده</div>
     <div id="readings-container"></div>
     <button type="button" onclick="showDailySub('main')" style="width:100%;background:#fff;color:#0F766E;border:1px solid #99F6E4;border-radius:10px;padding:11px;font-family:Cairo;font-weight:800;font-size:13px;cursor:pointer;margin:6px 0 10px">⬅ رجوع للبيان اليومى</button>
-    <button class="btn-submit" id="submit-btn" onclick="submitForm()">📤 إرسال البيان كامل (اليومى + الضغوط)</button>
+    <button class="btn-submit" id="submit-btn" onclick="submitForm()">💾 حفظ البيان كامل (اليومى + الضغوط) على التليفون</button>
   </div>
   </div><!-- /tab-daily -->
   </div><!-- /sup-tabs-area -->
@@ -1090,7 +1090,7 @@ td.mg-fz2{position:sticky;right:48px;background:#F4F8FC;font-weight:700;text-ali
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
       <button id="phone-copy-btn" onclick="phoneCopyText()" style="flex:1;min-width:120px;background:#166534;color:#fff;border:none;border-radius:10px;padding:11px;font-family:Cairo;font-weight:800;font-size:14px;cursor:pointer">📋 نسخ النص</button>
       <button onclick="phoneShareText()" style="flex:1;min-width:120px;background:#1A4A7A;color:#fff;border:none;border-radius:10px;padding:11px;font-family:Cairo;font-weight:800;font-size:14px;cursor:pointer">📲 مشاركة النص</button>
-      <button onclick="phoneExportToday()" style="flex:1;min-width:120px;background:#B45309;color:#fff;border:none;border-radius:10px;padding:11px;font-family:Cairo;font-weight:800;font-size:14px;cursor:pointer">📊 ملف الإكسيل (كل البيانات)</button>
+      <button onclick="phoneExportToday()" style="flex:1;min-width:120px;background:#B45309;color:#fff;border:none;border-radius:10px;padding:11px;font-family:Cairo;font-weight:800;font-size:14px;cursor:pointer">📊 ملف الإكسيل لليوم</button>
     </div>
   </div>
   <div id="dashboard-capture" style="background:#fff">
@@ -1226,12 +1226,12 @@ td.mg-fz2{position:sticky;right:48px;background:#F4F8FC;font-weight:700;text-ali
       <input type="date" id="conv-date" class="form-control" style="width:auto;direction:ltr;font-weight:700;border:1px solid #C7D2FE" onchange="convLoadDay()">
     </div>
     <div id="conv-input-wrap"></div>
-    <button onclick="submitConversion()" id="conv-submit-btn" style="width:100%;background:linear-gradient(135deg,#4338CA,#6366F1);color:#fff;border:none;border-radius:11px;padding:13px;font-family:Cairo;font-weight:800;font-size:15px;cursor:pointer;margin-top:12px">إرسال بيان التحويل والاختبار</button>
+    <button onclick="submitConversion()" id="conv-submit-btn" style="width:100%;background:linear-gradient(135deg,#4338CA,#6366F1);color:#fff;border:none;border-radius:11px;padding:13px;font-family:Cairo;font-weight:800;font-size:15px;cursor:pointer;margin-top:12px">💾 حفظ بيان التحويل والاختبار على التليفون</button>
     <div id="conv-status" style="text-align:center;font-size:13px;font-weight:700;margin-top:10px"></div>
   </div>
   <div id="conv-after" style="display:none;background:#fff;border-radius:14px;padding:18px 14px;box-shadow:0 1px 5px rgba(0,0,0,.08);margin-bottom:14px;text-align:center">
     <div style="font-size:42px">✅</div>
-    <div style="font-size:16px;font-weight:800;color:#166534;margin:6px 0">تم إرسال بيان التحويل والاختبار</div>
+    <div style="font-size:16px;font-weight:800;color:#166534;margin:6px 0">✓ اتحفظ بيان التحويل والاختبار على التليفون</div>
     <div id="conv-after-sum" style="font-size:12px;color:#64748B;margin-bottom:4px"></div>
     <button onclick="downloadConvImage()" style="width:100%;background:linear-gradient(135deg,#166534,#22C55E);color:#fff;border:none;border-radius:12px;padding:14px;font-family:Cairo;font-weight:800;font-size:15px;cursor:pointer;margin-top:10px">📥 تحميل صورة ملخص التحويل اليومى</button>
   </div>
@@ -2315,7 +2315,8 @@ async function exportDbZip(){ const zip=new JSZip(); const core={}; Object.keys(
 async function importDbZip(file){ const zip=await JSZip.loadAsync(file); let core=null; const months=[]; for(const name of Object.keys(zip.files)){ if(name==='core.json') core=JSON.parse(await zip.files[name].async('string')); else if(/^daily-\d{4}-\d{2}\.json$/.test(name)) months.push(JSON.parse(await zip.files[name].async('string'))); } applyLoaded(core, months); await Store.saveAll(); return {core:!!core, months:months.length}; }
 // تصدير بيانات فترة لإكسيل خام (كل الأعمدة) — للمراجعة أو الشغل الخارجى
 function exportRawDaily(from, to){ from=normDate(from); to=normDate(to); const rows=[DAILY_LABELS]; Object.keys(DB.daily).sort().forEach(k=>{ const r=DB.daily[k]; if(from&&r.date<from) return; if(to&&r.date>to) return; rows.push(rowOf(r)); }); const ws=XLSX.utils.aoa_to_sheet(rows); const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'البيانات'); return wb; }
-return { hooks, Store, DB, mergeInbox, mergeFiles, importLegacyWorkbook, stats, exportDbZip, importDbZip, exportRawDaily, installFetchShim, handleGet, handlePost, saveDaily, STATIONS_ORDER, DAILY_KEYS, DAILY_LABELS, todayStr, normDate, markCore, XS };
+function calcForRec(rec){ const row=rowOf(rec); return {st:calcIndicators(row, String(rec.code)), c:[calcCompIndicators(row, String(rec.code), 0), calcCompIndicators(row, String(rec.code), 1)]}; }
+return { calcForRec, hooks, Store, DB, mergeInbox, mergeFiles, importLegacyWorkbook, stats, exportDbZip, importDbZip, exportRawDaily, installFetchShim, handleGet, handlePost, saveDaily, STATIONS_ORDER, DAILY_KEYS, DAILY_LABELS, todayStr, normDate, markCore, XS };
 })();
 
 OfficeAPI.installFetchShim('local://api');
@@ -3317,7 +3318,7 @@ function buildCompSections(indices){
   if(rc){
     let rh=''; const multi=indices.length>1;
     const _ord2=['① الضاغط الأول','② الضاغط الثانى','③ الضاغط الثالث'];
-    if(multi) rh+='<div style="background:#FEF3C7;border:1px solid #FCD34D;border-radius:10px;padding:10px 13px;margin-bottom:12px;font-size:12px;font-weight:800;color:#92400E">⚠ المحطة فيها أكثر من ضاغط شغّال — املأ قراءات الضاغط الأول، وبعد ما تخلص انزل للتالى. لازم قراءات كل الضواغط الشغّالة قبل الإرسال.</div>';
+    if(multi) rh+='<div style="background:#FEF3C7;border:1px solid #FCD34D;border-radius:10px;padding:10px 13px;margin-bottom:12px;font-size:12px;font-weight:800;color:#92400E">⚠ المحطة فيها أكثر من ضاغط شغّال — املأ قراءات الضاغط الأول، وبعد ما تخلص انزل للتالى. لازم قراءات كل الضواغط الشغّالة قبل الحفظ.</div>';
     indices.forEach((idx,i)=>{
       const c=st.comps[idx]; window.__compModels[idx]=c.model;
       if(multi) rh+='<div id="rd-comp-'+idx+'" style="font-weight:900;color:#0F766E;font-size:15px;margin:'+(i?'20px':'2px')+' 0 6px;padding-bottom:4px;border-bottom:2px solid #0F766E">'+(_ord2[i]||('ضاغط '+(i+1)))+'</div>';
@@ -3729,8 +3730,8 @@ function checkSalesTotal(){
     window.__salesDiff=diff;
     if(Math.abs(diff)<=0.01){el.className='sales-check ok';el.textContent=`✓ متطابق — الإجمالى: ${act.toLocaleString('en-US',{minimumFractionDigits:2})} جنيه | صندوق: ${sandoq.toFixed(2)} جنيه`;}
     else if(diff>0&&diff<=DEPOSIT_TOL){el.className='sales-check ok';el.textContent=`✓ الإيداع أكبر بـ ${diff.toFixed(2)} جنيه (مقبول — فى حدود ${DEPOSIT_TOL} ج) — متوقع: ${exp.toFixed(2)} — فعلى: ${act.toFixed(2)}`;}
-    else if(diff>DEPOSIT_TOL){el.className='sales-check err';el.textContent=`❌ الإيداع أكبر من المبيعات بـ ${diff.toFixed(2)} جنيه (المسموح ${DEPOSIT_TOL} ج فقط) — لا يمكن الإرسال! متوقع: ${exp.toFixed(2)} — فعلى: ${act.toFixed(2)}`;}
-    else{el.className='sales-check err';el.textContent=`❌ المبيعات أكبر من الإيداع بـ ${Math.abs(diff).toFixed(2)} جنيه — لا يمكن الإرسال! متوقع: ${exp.toFixed(2)} — فعلى: ${act.toFixed(2)}`;}
+    else if(diff>DEPOSIT_TOL){el.className='sales-check err';el.textContent=`❌ الإيداع أكبر من المبيعات بـ ${diff.toFixed(2)} جنيه (المسموح ${DEPOSIT_TOL} ج فقط) — لا يمكن الحفظ! متوقع: ${exp.toFixed(2)} — فعلى: ${act.toFixed(2)}`;}
+    else{el.className='sales-check err';el.textContent=`❌ المبيعات أكبر من الإيداع بـ ${Math.abs(diff).toFixed(2)} جنيه — لا يمكن الحفظ! متوقع: ${exp.toFixed(2)} — فعلى: ${act.toFixed(2)}`;}
     el.style.display='block';
   } else {
     window.__salesDiff=null;
@@ -4478,12 +4479,12 @@ async function submitForm(){
   window.__isStoppedSubmit = false;
   window.__stopConfirmed = false;
   if(window.__salesDiff!==null && window.__salesDiff < -0.01){
-    alert('❌ لا يمكن الإرسال: المبيعات (× سعر المتر) أكبر من إجمالى الإيداع.\nالمفروض يكون الإيداع مساوياً أو أكبر من قيمة المبيعات.\nراجع الأرقام قبل الإرسال.');
+    alert('❌ لا يمكن الحفظ: المبيعات (× سعر المتر) أكبر من إجمالى الإيداع.\nالمفروض يكون الإيداع مساوياً أو أكبر من قيمة المبيعات.\nراجع الأرقام قبل الحفظ.');
     document.getElementById('f-cash-int')?.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
   if(window.__salesDiff!==null && window.__salesDiff > 2){
-    alert('❌ لا يمكن الإرسال: إجمالى الإيداع أكبر من قيمة المبيعات (× سعر المتر) بأكثر من 2 جنيه.\nالمسموح أن يزيد الإيداع بحد أقصى 2 جنيه فقط.\nراجع الأرقام قبل الإرسال.');
+    alert('❌ لا يمكن الحفظ: إجمالى الإيداع أكبر من قيمة المبيعات (× سعر المتر) بأكثر من 2 جنيه.\nالمسموح أن يزيد الإيداع بحد أقصى 2 جنيه فقط.\nراجع الأرقام قبل الحفظ.');
     document.getElementById('f-cash-int')?.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
@@ -4776,8 +4777,8 @@ async function submitForm(){
   const sendBtn=document.getElementById('submit-btn');
   const oldBtnTxt=sendBtn?sendBtn.textContent:'';
   const reqDate=document.getElementById('f-date')?.value||'';
-  if(sendBtn){sendBtn.disabled=true;sendBtn.textContent='⏳ جارى الإرسال...';}
-  showSendBanner('sending','جارى إرسال البيان...');
+  if(sendBtn){sendBtn.disabled=true;sendBtn.textContent='⏳ جارى الحفظ على التليفون...';}
+  showSendBanner('sending','جارى حفظ البيان على التليفون...');
   // دالة إظهار الداشبورد (تُنادى فقط عند التأكيد)
   window.__showDash=function(){
     document.getElementById('form-screen').style.display='none';
@@ -4793,7 +4794,7 @@ async function submitForm(){
   const _ok=()=>{
     if(_verifyDone)return; _verifyDone=true;
     if(sendBtn){sendBtn.disabled=false;sendBtn.textContent=oldBtnTxt;}
-    showSendBanner('ok','✓ اتحفظ البيان على التليفون — بدون إنترنت وبدون أى إرسال لسيرفر. انسخ النص وابعته واتساب');
+    showSendBanner('ok','✓ اتحفظ البيان على التليفون — بدون إنترنت وبدون أى إرسال لسيرفر. انسخ النص وابعته واتساب زى الأوفلاين');
     window.__showDash();
   };
   function _softConfirm(msg){
@@ -4811,7 +4812,7 @@ async function submitForm(){
         if(_verifyDone)return;
         if(v&&v.found){ _ok(); }                 // وصل — نجاح فورى مؤكد
         else if(attempt<12){ setTimeout(()=>_pollVerify(attempt+1), 1000); } // لسه بيكتب/السيرفر بطىء، نعيد لـ12 ثانية
-        else { _fail('⚠️ لم يتأكد وصول البيان بعد 12 ثانية. غالباً لم يصل — تأكد من الإنترنت وأعد الإرسال، وراجع شاشة المسؤول للتأكد.'); }
+        else { _fail('⚠️ لم يتأكد وصول البيان بعد 12 ثانية. غالباً لم يصل — اضغط حفظ مرة أخرى.'); }
       })
       .catch(()=>{
         if(_verifyDone)return;
@@ -4825,9 +4826,9 @@ async function submitForm(){
     body: JSON.stringify(payload)
   }).then(()=>{
     if(sendBtn)sendBtn.textContent='⏳ جارى التأكد...';
-    showSendBanner('sending','جارى تأكيد وصول البيان... (قد يستغرق حتى 12 ثانية)');
+    showSendBanner('sending','جارى التأكد من الحفظ على التليفون...');
     setTimeout(()=>_pollVerify(1), 800);
-  }).catch(()=>_fail('فشل الاتصال بالسيرفر — تأكد من الإنترنت وأعد المحاولة. (لم يُحفظ شىء)'));
+  }).catch(()=>_fail('تعذر الحفظ — أعد المحاولة. (لم يُحفظ شىء)'));
   const hasGasMotor=activeComps.some(i=>st.comps[i]?.motor==='gas');
   const costDecimals=2;
   const fmtEn=(n,d=0)=>n==null?'—':n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
@@ -5402,12 +5403,12 @@ function submitConversion(){
   const date=document.getElementById('conv-date').value;
   if(!date){ _convStatus('لازم تختار التاريخ','#B91C1C'); return; }
   const entries=CONV_CENTERS.map(c=>({code:c.code,name:c.name,conv:parseFloat(document.getElementById('cv-conv-'+c.code)?.value)||0,test:parseFloat(document.getElementById('cv-test-'+c.code)?.value)||0}));
-  _convStatus('⏳ جارى الإرسال...','#4338CA');
+  _convStatus('⏳ جارى الحفظ...','#4338CA');
   const btn=document.getElementById('conv-submit-btn'); if(btn)btn.disabled=true;
   fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify({type:'conversion',date:date,entries:entries})})
     .then(r=>r.json()).then(j=>{
       if(btn)btn.disabled=false;
-      if(j&&j.ok){ _convStatus('✅ تم الإرسال','#166534');
+      if(j&&j.ok){ _convStatus('✅ اتحفظ على التليفون','#166534');
         fetch(APPS_SCRIPT_URL+'?action=convReport').then(r=>r.json()).then(rep=>{
           convBuildCapture(rep,date,entries);
           const tc=entries.reduce((a,e)=>a+e.conv,0),tt=entries.reduce((a,e)=>a+e.test,0);
@@ -5416,7 +5417,7 @@ function submitConversion(){
           document.getElementById('conv-after').scrollIntoView({behavior:'smooth'});
         }).catch(()=>{ document.getElementById('conv-after').style.display='block'; });
       } else { _convStatus('❌ تعذّر الإرسال: '+((j&&j.error)||''),'#B91C1C'); }
-    }).catch(e=>{ if(btn)btn.disabled=false; _convStatus('❌ تعذّر الإرسال — راجع الاتصال','#B91C1C'); });
+    }).catch(e=>{ if(btn)btn.disabled=false; _convStatus('❌ تعذّر الحفظ — أعد المحاولة','#B91C1C'); });
 }
 function _convKpi(v,l){ return '<div style="background:#F4F6FF;border:1px solid #E0E4F7;border-radius:12px;padding:10px 4px;text-align:center"><div style="font-size:21px;font-weight:800;color:#312E81;direction:ltr">'+v+'</div><div style="font-size:10.5px;color:#6366F1;font-weight:700;margin-top:2px">'+l+'</div></div>'; }
 function _convAch(a,p){ return p>0?Math.round(a/p*100):0; }
@@ -6201,7 +6202,7 @@ function saveCalibCfg2(code){
   fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify({type:'calibConfig',code:code,name:(STATIONS[code]&&STATIONS[code].name)||'',rows:rows})}).then(r=>r.json()).then(j=>{
     if(stt){ if(j&&j.ok){ stt.style.color='#166534'; stt.textContent='✅ اتحفظ الإعداد ('+j.saved+' بند)'; } else { stt.style.color='#B91C1C'; stt.textContent='❌ تعذر الحفظ: '+((j&&j.error)||''); } }
     window.__calibCfg[code]=rows;
-  }).catch(()=>{ if(stt){ stt.style.color='#B91C1C'; stt.textContent='❌ تعذر الإرسال — راجع الاتصال'; } });
+  }).catch(()=>{ if(stt){ stt.style.color='#B91C1C'; stt.textContent='❌ تعذر الحفظ — أعد المحاولة'; } });
 }
 // ── استيراد إعداد المعايرة من إكسيل ──
 function _loadSheetJS(){ return new Promise((res,rej)=>{ if(window.XLSX) return res(window.XLSX); const s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; s.onload=()=>{ window.XLSX?res(window.XLSX):rej(new Error('xlsx')); }; s.onerror=()=>rej(new Error('load')); document.head.appendChild(s); }); }
@@ -6254,7 +6255,7 @@ function _saveCfgImport(byCode){
     if(st){ if(j&&j.ok){ st.style.color='#166534'; st.textContent='✅ اتحفظ إعداد '+(j.stations||codes.length)+' محطة ('+(j.rows||nrows)+' بند)'; } else { st.style.color='#B91C1C'; st.textContent='❌ تعذر الحفظ: '+((j&&j.error)||''); } }
     codes.forEach(c=>{ window.__calibCfg[c]=byCode[c]; });
     const cur=document.getElementById('calibcfg-station'); if(cur&&cur.value&&byCode[cur.value]) calibCfgPick();
-  }).catch(()=>{ if(st){ st.style.color='#B91C1C'; st.textContent='❌ تعذر الإرسال — راجع الاتصال'; } });
+  }).catch(()=>{ if(st){ st.style.color='#B91C1C'; st.textContent='❌ تعذر الحفظ — أعد المحاولة'; } });
 }
 // ══════════ مسح مدخلات المحطات (زر المسؤول) — معايرة/تراخيص · محطة أو الكل ══════════
 function openWipeDialog(kind){
@@ -6282,7 +6283,7 @@ function doWipeDoc(kind){
   fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify({type:'wipe_doc', kind:kind, code:code})}).then(r=>r.json()).then(function(j){
     if(st){ if(j&&j.ok){ st.style.color='#166534'; st.textContent='✅ اتمسح '+(j.removed||0)+' مدخل'+(j.imgDeleted?(' و '+j.imgDeleted+' صورة'):''); } else { st.style.color='#B91C1C'; st.textContent='❌ تعذر المسح: '+((j&&j.error)||''); } }
     setTimeout(function(){ const ov=document.getElementById('wipe-modal'); if(ov)ov.style.display='none'; try{ loadDocMgr(kind); }catch(e){} }, j&&j.ok?1400:2500);
-  }).catch(function(){ if(st){ st.style.color='#B91C1C'; st.textContent='❌ تعذر الإرسال — لو صور كتير جرّب محطة محطة'; } });
+  }).catch(function(){ if(st){ st.style.color='#B91C1C'; st.textContent='❌ تعذر الحفظ — أعد المحاولة'; } });
 }
 // ══════════ الوثائق (المسؤول): تجميعة استحقاق كل المحطات — معايرة/تراخيص ══════════
 function loadDocMgr(kind){
@@ -6835,7 +6836,7 @@ function submitCalibBatch(){
   fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify({type:'calib_batch', code:currentStation.code, name:currentStation.name, items:items})}).then(r=>r.json()).then(j=>{
     if(st){ if(j&&j.ok){ st.style.color='#166534'; st.textContent='✅ اتحفظ '+(j.saved||items.length)+' بند'; } else { st.style.color='#B91C1C'; st.textContent='❌ تعذر الحفظ'; } }
     setTimeout(()=>{ if(st)st.textContent=''; try{ loadMyDoc('calib'); }catch(e){} loadCalibBatch(kind); },1500);
-  }).catch(()=>{ if(st){ st.style.color='#B91C1C'; st.textContent='❌ تعذر الإرسال — راجع الاتصال'; } });
+  }).catch(()=>{ if(st){ st.style.color='#B91C1C'; st.textContent='❌ تعذر الحفظ — أعد المحاولة'; } });
 }
 function _calibCompose(){
   const item=document.getElementById('calib-item').value;
@@ -6918,7 +6919,7 @@ function submitDoc(k){
       if(k==='calib'){ try{ calibConfigure(); }catch(e){} }
       setTimeout(()=>{ st.textContent=''; loadMyDoc(k); },1200);
     } else { st.style.color='#B91C1C'; st.textContent='❌ تعذر الحفظ: '+((j&&j.error)||''); }
-  }).catch(e=>{ st.style.color='#B91C1C'; st.textContent='❌ تعذر الإرسال — تأكد من الإنترنت'; });
+  }).catch(e=>{ st.style.color='#B91C1C'; st.textContent='❌ تعذر الحفظ — أعد المحاولة'; });
 }
 window.__docItems={};
 function loadMyDoc(k){
@@ -7705,7 +7706,7 @@ function showFireSuccess(items, stName, date, faultCount){
   ov.innerHTML='<div style="max-width:520px;width:100%;max-height:88vh;overflow:auto;background:#fff;border-radius:16px;padding:18px;box-shadow:0 10px 40px rgba(0,0,0,.2)">'
     +'<div id="fire-summary-capture" data-st="'+_esc(stName)+'" data-date="'+_esc(date)+'" style="background:#fff;padding:6px 4px 10px">'
       +'<div style="text-align:center;font-size:34px">🧯 ✅</div>'
-      +'<div style="text-align:center;font-size:16px;font-weight:800;color:#166534;margin-bottom:2px">تم إرسال بيان منظومات الحريق وتأكيد وصوله</div>'
+      +'<div style="text-align:center;font-size:16px;font-weight:800;color:#166534;margin-bottom:2px">✓ اتحفظ بيان منظومات الحريق على التليفون — بدون إرسال لأى سيرفره</div>'
       +'<div style="text-align:center;font-size:13px;font-weight:800;color:#0F172A;margin-bottom:12px;white-space:nowrap">'+stName+' — '+date+'</div>'
       +'<div style="background:#FEF2F2;border:1px solid #FCA5A5;border-radius:10px;padding:10px 14px;text-align:right">'
         +'<div style="font-size:13px;font-weight:800;color:#B91C1C;margin-bottom:6px">🧯 ملخص البيان اللى وصل واتسجّل</div>'+rows
@@ -7847,7 +7848,7 @@ function submitTadamon(){
   const consKvarh=(curKvarh-prevKvarh)*factor;
   const isComOnly=(currentStation?.tariff||tariff)==="com";
   const pfRes=tadamonPFStatus(consKwh, consKvarh, isComOnly);
-  statusEl.style.color='#0369A1'; statusEl.textContent='⏳ جارى الإرسال...';
+  statusEl.style.color='#0369A1'; statusEl.textContent='⏳ جارى الحفظ على التليفون...';
   const payload={
     type:'tadamon',
     code:st.code, name:st.name, region:st.region,
@@ -7867,15 +7868,15 @@ function submitTadamon(){
           .then(r=>r.json())
           .then(j=>{
             if(done)return;
-            if(j.found){ done=true; showSectionSuccess('tadamon','تم إرسال محضر التضامن بنجاح'); }
+            if(j.found){ done=true; showSectionSuccess('tadamon','✓ اتحفظ محضر التضامن على التليفون — بدون إرسال لأى سيرفر'); }
             else if(attempt<12){ statusEl.textContent='⏳ جارى تأكيد الوصول... ('+attempt+')'; setTimeout(()=>pollTad(attempt+1),1000); }
             else {
               done=true;
               statusEl.style.color='#C2410C';
-              statusEl.innerHTML='⚠️ <b>لم نتمكن من تأكيد وصول المحضر.</b><br>اضغط "إرسال محضر التضامن" مرة أخرى للتأكيد — لو كان وصل فى المرة الأولى هيتأكد فوراً.';
+              statusEl.innerHTML='⚠️ <b>لم نتمكن من تأكيد وصول المحضر.</b><br>اضغط "حفظ محضر التضامن" مرة أخرى للتأكيد — لو كان وصل فى المرة الأولى هيتأكد فوراً.';
             }
           })
-          .catch(()=>{ if(!done && attempt<12) setTimeout(()=>pollTad(attempt+1),1000); else if(!done){ done=true; statusEl.style.color='#C2410C'; statusEl.innerHTML='⚠️ <b>لم نتمكن من تأكيد وصول المحضر.</b><br>تأكد من الإنترنت واضغط إرسال مرة أخرى.'; } });
+          .catch(()=>{ if(!done && attempt<12) setTimeout(()=>pollTad(attempt+1),1000); else if(!done){ done=true; statusEl.style.color='#C2410C'; statusEl.innerHTML='⚠️ <b>لم نتمكن من تأكيد وصول المحضر.</b><br>اضغط حفظ مرة أخرى.'; } });
       }
       setTimeout(()=>pollTad(1),800);
     })
@@ -8128,7 +8129,7 @@ function submitFireSafety(){
     items.push(item);
   });
   if(missing){ statusEl.style.color='#B91C1C'; statusEl.textContent='❌ كل بند فيه عطل لازم تحدد عطل واحد على الأقل'; return; }
-  statusEl.style.color='#1A6B4A'; statusEl.textContent='⏳ جارى الإرسال...';
+  statusEl.style.color='#1A6B4A'; statusEl.textContent='⏳ جارى الحفظ على التليفون...';
   const payload={ type:'fire_safety', date:dateEl.value, code:st.code, name:st.name, region:st.region, fault_count:faultCount, items:JSON.stringify(items) };
   fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)})
     .then(()=>{
@@ -8144,10 +8145,10 @@ function submitFireSafety(){
             else {
               done=true;
               statusEl.style.color='#C2410C';
-              statusEl.innerHTML='⚠️ <b>لم نتمكن من تأكيد وصول البيان.</b><br>اضغط "إرسال بيان منظومات الحريق" مرة أخرى للتأكيد — لو كان وصل فى المرة الأولى هيتأكد فوراً بدون تكرار.';
+              statusEl.innerHTML='⚠️ <b>لم نتمكن من تأكيد وصول البيان.</b><br>اضغط "حفظ بيان منظومات الحريق" مرة أخرى للتأكيد — لو كان وصل فى المرة الأولى هيتأكد فوراً بدون تكرار.';
             }
           })
-          .catch(()=>{ if(!done && attempt<12) setTimeout(()=>pollFire(attempt+1),1000); else if(!done){ done=true; statusEl.style.color='#C2410C'; statusEl.innerHTML='⚠️ <b>لم نتمكن من تأكيد وصول البيان.</b><br>تأكد من الإنترنت واضغط إرسال مرة أخرى.'; } });
+          .catch(()=>{ if(!done && attempt<12) setTimeout(()=>pollFire(attempt+1),1000); else if(!done){ done=true; statusEl.style.color='#C2410C'; statusEl.innerHTML='⚠️ <b>لم نتمكن من تأكيد وصول البيان.</b><br>اضغط حفظ مرة أخرى.'; } });
       }
       setTimeout(()=>pollFire(1),800);
     })
@@ -9081,8 +9082,8 @@ body{padding-bottom:70px}
 <div id="phone-msg"></div>
 <div id="phone-bar">
   <span id="phone-pending">—</span>
-  <button class="main" onclick="phoneExport()">📦 إرسال للإدارة</button>
-  <button onclick="phoneExportDay()" title="إعادة إرسال يوم">📅 يوم معين</button>
+  <button class="main" onclick="phoneExport()">📊 ملف الإكسيل للسكرتارية</button>
+  <button onclick="phoneExportDay()" title="ملف يوم معين">📅 يوم معين</button>
   <button onclick="phoneHistory()" title="سجل الأيام">🗂</button>
 </div>
 <script>
@@ -9104,7 +9105,7 @@ OfficeAPI.hooks.onPost=function(d, r){
   saveOutbox();
 };
 function pending(){ return outbox.filter(e=>!e.sent); }
-function refreshBar(){ const bar=$('phone-bar'); if(!bar) return; const p=pending(); const n=p.length; $('phone-pending').textContent = n ? ('📨 '+n+' بيان بانتظار الإرسال للإدارة'+(p.some(e=>e.day<OfficeAPI.todayStr())?' (فيه أيام سابقة)':'')) : '✓ لا يوجد ما ينتظر الإرسال'; bar.classList.toggle('has', n>0); }
+function refreshBar(){ const bar=$('phone-bar'); if(!bar) return; const p=pending(); const n=p.length; $('phone-pending').textContent = n ? ('📊 '+n+' بيان جاهز لملف الإكسيل'+(p.some(e=>e.day<OfficeAPI.todayStr())?' (فيه أيام سابقة)':'')) : '✓ كل البيانات اتجمّعت فى ملفات إكسيل'; bar.classList.toggle('has', n>0); }
 function stationCode(){ try{ return (window.currentStation&&window.currentStation.code)||''; }catch(e){ return ''; } }
 function stationName(){ try{ return (window.currentStation&&window.currentStation.name)||''; }catch(e){ return ''; } }
 function buildWorkbook(entries){
@@ -9126,48 +9127,75 @@ function buildWorkbook(entries){
 async function shareOrDownload(wb, name){
   const b64=XLSX.write(wb,{type:'base64',bookType:'xlsx'}); const bin=atob(b64); const bytes=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
   const mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'; const file=new File([bytes], name, {type:mime});
-  if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){ try{ await navigator.share({files:[file], title:name, text:'ملف بيانات المحطة — '+name}); return 'shared'; }catch(e){ if(e&&e.name==='AbortError') return 'cancel'; } }
+  if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){ try{ await navigator.share({files:[file], title:name, text:'ملف إكسيل بيانات المحطة — '+name}); return 'shared'; }catch(e){ if(e&&e.name==='AbortError') return 'cancel'; } }
   const url=URL.createObjectURL(new Blob([bytes],{type:mime})); const a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 4000); return 'downloaded';
 }
 window.phoneExport=async function(onlyDay){
   let entries=onlyDay ? outbox.filter(e=>e.day===onlyDay) : pending();
-  if(!entries.length){ alert(onlyDay ? ('لا توجد بيانات مسجّلة ليوم '+onlyDay) : 'لا يوجد ما يُرسل — سجّل البيان اليومى أولاً'); return; }
+  if(!entries.length){ alert(onlyDay ? ('لا توجد بيانات مسجّلة ليوم '+onlyDay) : 'لا توجد بيانات جديدة — احفظ البيان اليومى أولاً'); return; }
   const code=stationCode()||(entries[0].payload.code||'0'); const days=[...new Set(entries.map(e=>e.day))].sort(); const name=code+'_'+(days.length===1?days[0]:(days[0]+'_الى_'+days[days.length-1]))+'.xlsx';
   const res=await shareOrDownload(buildWorkbook(entries), name);
   if(res==='cancel') return;
   entries.forEach(e=>{ e.sent=true; e.sentAt=new Date().toISOString(); }); saveOutbox();
-  const msg=$('phone-msg'); if(msg){ msg.textContent=(res==='shared'?'✅ تم تجهيز الملف ومشاركته: ':'✅ تم تحميل الملف: ')+name+' — ابعته على واتساب السكرتارية'; msg.style.display='block'; setTimeout(()=>{ msg.style.display='none'; }, 8000); }
+  const msg=$('phone-msg'); if(msg){ msg.textContent='✅ ملف الإكسيل جاهز: '+name+' — ابعته واتساب للسكرتارية لتجميع ملفات المنطقة'; msg.style.display='block'; setTimeout(()=>{ msg.style.display='none'; }, 8000); }
 };
-window.phoneExportDay=function(){ const d=prompt('اكتب تاريخ اليوم المطلوب إعادة إرساله (yyyy-mm-dd):', OfficeAPI.todayStr()); if(!d) return; phoneExport(OfficeAPI.normDate(d)); };
-window.phoneHistory=function(){ const byDay={}; outbox.forEach(e=>{ (byDay[e.day]=byDay[e.day]||[]).push(e); }); const days=Object.keys(byDay).sort().reverse(); if(!days.length){ alert('لا توجد بيانات مسجّلة بعد'); return; } alert('آخر الأيام المسجّلة:\n'+days.slice(0,20).map(d=>d+' — '+byDay[d].length+' بيان '+(byDay[d].every(e=>e.sent)?'✓ أُرسل':'⏳ لم يُرسل')).join('\n')); };
-// ── نص البيان اليومى (نفس فكرة رسالة الأوفلاين — ينسخه المشرف ويبعته واتساب كالمعتاد) ──
-const _f=(v,dec)=>{ const n=parseFloat(v); if(isNaN(n)) return ''; return n.toLocaleString('en-US',{maximumFractionDigits:(dec==null?2:dec)}); };
-const _has=v=>v!=null && v!=='' && !(typeof v==='number' && v===0) && String(v)!=='0';
+window.phoneExportDay=function(){ const d=prompt('اكتب تاريخ اليوم المطلوب تجهيز ملف الإكسيل له (yyyy-mm-dd):', OfficeAPI.todayStr()); if(!d) return; phoneExport(OfficeAPI.normDate(d)); };
+window.phoneHistory=function(){ const byDay={}; outbox.forEach(e=>{ (byDay[e.day]=byDay[e.day]||[]).push(e); }); const days=Object.keys(byDay).sort().reverse(); if(!days.length){ alert('لا توجد بيانات مسجّلة بعد'); return; } alert('آخر الأيام المسجّلة:\n'+days.slice(0,20).map(d=>d+' — '+byDay[d].length+' بيان '+(byDay[d].every(e=>e.sent)?'✓ اتجمّع فى ملف إكسيل':'⏳ لسه ما اتجمّعش')).join('\n')); };
+// ── نص البيان اليومى بنفس صيغة رسالة الأوفلاين (واتساب) ──
+const ISO=s=>'⁨'+s+'⁩'; // عزل اتجاه الأرقام زى رسالة الأوفلاين
+const _n=(v,dec)=>{ const n=parseFloat(v); if(isNaN(n)) return null; return n.toLocaleString('en-US',{minimumFractionDigits:0, maximumFractionDigits:(dec==null?2:dec)}); };
+const _v=(v,dec,dash)=>{ const t=_n(v,dec); return t==null?(dash||'-'):ISO(t); };
+const _hm=v=>{ const n=parseFloat(v); if(isNaN(n)) return '-'; const h=Math.floor(n); let m=Math.round((n-h)*60); return ISO(h+' س '+m+' د'); };
+const _txt=v=>{ v=(v==null?'':String(v)).trim(); return v?ISO(v):'-'; };
+const _pf=(k,q)=>{ k=parseFloat(k)||0; q=parseFloat(q)||0; const kva=(k>0&&q>0)?Math.sqrt(k*k+q*q):k; return kva>0?((k/kva)*100).toFixed(1)+'%':'-'; };
+const _dur=seg=>{ const m=String(seg).match(/\((?:(\d+)\s*س\s*)?(\d+)\s*د\)/); return m?((parseInt(m[1]||0,10))+' س '+parseInt(m[2]||0,10)+' د'):''; };
+const _reason=seg=>String(seg).replace(/\((?:\d+\s*س\s*)?\d+\s*د\)/,'').replace(/^[—\-–\s]+|[—\-–\s]+$/g,'').trim();
 window.phoneBuildText=function(d){
-  if(!d) return ''; const L=[]; const add=s=>{ if(s) L.push(s); };
-  add('📋 البيان اليومى — '+(d.name||'')+' ('+(d.code||'')+')');
-  add('📅 '+(d.date||'')+(d.sent_time?('  ⏰ '+d.sent_time):''));
-  add('━━━━━━━━━━━━━━');
-  let sales='⛽ المبيعات: '+_f(d.sales)+' م³'; if(d.has_truck==1||d.has_truck==='1') sales+=' (أفراد '+_f(d.individual_sales)+' · شاحنة '+_f(d.truck_sales)+')'; add(sales);
-  const dep=[]; if(_has(d.cash)) dep.push('نقدى '+_f(d.cash)+' ج'); if(_has(d.bonds)) dep.push('بونات '+_f(d.bonds)+' ج'); if(_has(d.smart_g)) dep.push('سمارت غازتك '+_f(d.smart_g)); if(_has(d.smart_k)) dep.push('سمارت كارجاس '+_f(d.smart_k)); if(_has(d.truck_bonus)) dep.push('قيمة الشاحنة '+_f(d.truck_bonus)+' ج'); if(_has(d.sandoq)) dep.push('استحقاق الصندوق '+_f(d.sandoq)+' ج'); if(dep.length) add('💰 الإيداع: '+dep.join(' · '));
-  if(_has(d.loss)) add('📉 فقد المبيعات: '+_f(d.loss)+' م³');
-  const el=[]; if(_has(d.kwh_ind)) el.push('صناعى '+_f(d.kwh_ind,0)+' ك.و.س'); if(_has(d.kwh_com)) el.push('تجارى '+_f(d.kwh_com,0)+' ك.و.س'); if(_has(d.kvarh)) el.push('KVARH '+_f(d.kvarh,0)); if(_has(d.kwh_ind_b)||_has(d.kvarh_b)) el.push('عداد B: '+_f(d.kwh_ind_b,0)+' ك.و.س / KVARH '+_f(d.kvarh_b,0)); if(el.length) add('⚡ الكهرباء: '+el.join(' · '));
-  const s=parseFloat(d.sales)||0; const kwh=((parseFloat(d.kwh_ind)||0)+(parseFloat(d.kwh_ind_b)||0))||(parseFloat(d.kwh_com)||0); const ind=[]; if(s>0&&kwh>0) ind.push('استهلاك المتر المكعب '+(kwh/s).toFixed(2)+' ك.و.س/م³'); if(_has(d.pf)) ind.push('معامل القدرة '+(parseFloat(d.pf)<=1?(parseFloat(d.pf)*100).toFixed(1):_f(d.pf,1))+'%'+(d.pf_status?' ('+d.pf_status+')':'')); if(_has(d.flow_actual)) ind.push('معدل التدفق '+_f(d.flow_actual,0)+' م³/س'); if(ind.length) add('📊 '+ind.join(' · '));
-  [['c1','الضاغط 1'],['c2','الضاغط 2']].forEach(([pre,lbl])=>{ if(!d[pre+'_name']) return; const a=[]; a.push(lbl+' ('+d[pre+'_name']+(d[pre+'_model']?' '+d[pre+'_model']:'')+')'); const h=[]; if(_has(d[pre+'_th'])) h.push('كلية '+_f(d[pre+'_th'])+' س'); if(_has(d[pre+'_tf'])) h.push('فعلية '+_f(d[pre+'_tf'])+' س'); if(_has(d[pre+'_starts'])) h.push('تشغيلات '+_f(d[pre+'_starts'],0)); if(_has(d[pre+'_inlet'])) h.push('ضغط دخول '+_f(d[pre+'_inlet'])); if(h.length) a.push(h.join(' · ')); add('🔧 '+a.join(': '));
-    const o=[]; if(d[pre+'_oil_type']) o.push(d[pre+'_oil_type']); if(_has(d[pre+'_oil_cons'])) o.push('استهلاك '+_f(d[pre+'_oil_cons'])+' ل'+(d[pre+'_oil_cons_type']?' ('+d[pre+'_oil_cons_type']+')':'')); if(_has(d[pre+'_oil_bal'])) o.push('رصيد '+_f(d[pre+'_oil_bal'])+' ل'); if(d[pre+'_oil2_type']&&(_has(d[pre+'_oil2_cons'])||_has(d[pre+'_oil2_bal']))) o.push('زيت ثانى '+d[pre+'_oil2_type']+': استهلاك '+_f(d[pre+'_oil2_cons'])+' · رصيد '+_f(d[pre+'_oil2_bal'])); if(o.length) add('   🛢 زيت: '+o.join(' · '));
-    if(d[pre+'_goil_type']&&(_has(d[pre+'_goil_cons'])||_has(d[pre+'_goil_bal']))) add('   🛢 زيت المحرك: '+d[pre+'_goil_type']+' · استهلاك '+_f(d[pre+'_goil_cons'])+' ل · رصيد '+_f(d[pre+'_goil_bal'])+' ل');
-    const m=[]; if(d[pre+'_maint_next']) m.push('الصيانة القادمة '+d[pre+'_maint_next']+(_has(d[pre+'_maint_rem'])?' (باقى '+_f(d[pre+'_maint_rem'],0)+' س)':'')); if(_has(d[pre+'_lube_rem'])) m.push('التشحيم باقى '+_f(d[pre+'_lube_rem'],0)+' س'); if(d[pre+'_gm_next']) m.push('صيانة المحرك '+d[pre+'_gm_next']+(_has(d[pre+'_gm_rem'])?' (باقى '+_f(d[pre+'_gm_rem'],0)+' س)':'')); if(m.length) add('   🔩 '+m.join(' · ')); });
-  if(d.is_stopped==1||d.is_stopped==='1') add('⛔ المحطة متوقفة: '+(d.stop_reason||'')+(d.stop_fault_desc?' — '+d.stop_fault_desc:'')+(d.stop_fault_status?' — '+d.stop_fault_status:''));
-  const st=[]; if(_has(d.total_downtime)) st.push('إجمالى التوقف '+d.total_downtime); if(d.stop_box) st.push(d.stop_box); else if(d.stop_ar) st.push(d.stop_ar); if(d.supervisor_action) st.push('الإجراء: '+d.supervisor_action); if(st.length) add('🛑 التوقفات: '+st.join(' — ')); if(d.purge_box) add('🔌 خارج الإرادة: '+d.purge_box+(d.purge_downtime?' ('+d.purge_downtime+')':''));
-  if(_has(d.hoses_count)) add('🔗 هوزات متوقفة: '+d.hoses_count+(d.hoses_stopped?' ('+d.hoses_stopped+')':''));
-  if(d.low_reason) add('📉 سبب الانخفاض: '+d.low_reason); if(d.high_reason) add('📈 سبب الزيادة: '+d.high_reason);
-  const w=[]; if(_has(d.w_drink)) w.push('شرب '+_f(d.w_drink)+' م³'); if(_has(d.w_fire)) w.push('حريق '+_f(d.w_fire)+' م³'); if(w.length) add('💧 المياه: '+w.join(' · '));
-  if(d.safety_date) add('🛡 فحص معدات الأمان: '+d.safety_date+(_has(d.safety_rem)?' (باقى '+_f(d.safety_rem,0)+' يوم)':''));
-  if(d.notes) add('📝 ملاحظات: '+d.notes);
-  add('━━━━━━━━━━━━━━'); add('✅ مسجّل على تليفون المحطة — بدون إرسال لأى سيرفر');
+  if(!d) return ''; const L=[]; const add=s=>L.push(s==null?'':s);
+  const days=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت']; let dayName='-'; try{ const dd=new Date(String(d.date)+'T00:00:00'); if(!isNaN(dd)) dayName=days[dd.getDay()]; }catch(e){}
+  let calc=null; try{ calc=OfficeAPI.calcForRec(d); }catch(e){}
+  add('*🏭 بيانات المحطة*'); add('إسم المحطة: '+ISO(d.name||'')); add('اليوم: '+ISO(dayName)); add('التاريخ: '+ISO(d.date||'')); add('');
+  add('*⛽ المبيعات*'); add('إجمالى المبيعات: '+_v(d.sales,2,'0')+' م³');
+  if(d.has_truck==1||d.has_truck==='1'){ add('مبيعات الأفراد: '+_v(d.individual_sales,2)+' م³'); add('مبيعات الشاحنة: '+_v(d.truck_sales,2)+' م³'); }
+  add('الكمية التقديرية لفقد المبيعات: '+_v(d.loss,2,ISO('0'))); add('سبب انخفاض المبيعات: '+_txt(d.low_reason)); add('سبب زيادة المبيعات: '+_txt(d.high_reason)); add('');
+  add('*💰 الإيداع والبونات والسمارت*'); add('الإيداع النقدى: '+_v(d.cash,2,ISO('0'))+' جنيه'); add('بونات: '+_v(d.bonds,2,ISO('0'))+' جنيه'); add('سمارت غازتك: '+_v(d.smart_g,2,ISO('0'))+' جنيه'); add('سمارت كارجاس: '+_v(d.smart_k,2,ISO('0'))+' جنيه');
+  if(d.has_truck==1||d.has_truck==='1') add('قيمة الشاحنة: '+_v(d.truck_bonus,2,ISO('0'))+' جنيه'); if(parseFloat(d.sandoq)>0) add('استحقاق الصندوق: '+_v(d.sandoq,2)+' جنيه'); add('');
+  add('*⏱️ تشغيل الضواغط والحيود*');
+  [['c1',0],['c2',1]].forEach(([pre,ci])=>{ if(!d[pre+'_name']) return; add('الضاغط ('+(ci+1)+') '+ISO(d[pre+'_name'])+':'); add('• الساعات الكلية: '+_hm(d[pre+'_th'])); add('• الساعات الفعلية: '+_hm(d[pre+'_tf'])); add('• عدد مرات التشغيل: '+_v(d[pre+'_starts'],0,ISO('0')));
+    let dev='-'; if(calc){ const cc=calc.c[ci]; if(cc.frDevNum!=null) dev=ISO((cc.frDevNum>=0?'+':'')+cc.frDevNum.toFixed(1)+'%'); else if(cc.fr==='مشترك' && calc.st.frDevNum!=null) dev=ISO((calc.st.frDevNum>=0?'+':'')+calc.st.frDevNum.toFixed(1)+'% (مشترك)'); } add('• الحيود: '+dev); });
+  add('');
+  add('*🧭 ضغوط الغاز*'); add('ضغط شبكة الغاز للمحطة: '+_v(d.press_mod,2)+' بار'); add('ضغط الغاز الفعلى (PLC): '+_v(d.press_plc,2)+' بار'); add('');
+  add('*⚡ الكهرباء والباور فاكتور*');
+  const kA=parseFloat(d.kwh_ind)||0, qA=parseFloat(d.kvarh)||0, kB=parseFloat(d.kwh_ind_b)||0, qB=parseFloat(d.kvarh_b)||0, kC=parseFloat(d.kwh_com)||0; const sales=parseFloat(d.sales)||0;
+  if(kB>0||qB>0){ add('عداد الضاغط A — الفعالة: '+_v(kA,0,ISO('0'))+' | غير الفعالة: '+_v(qA,0,ISO('0'))+' | الباور فاكتور: '+ISO(_pf(kA,qA))); add('عداد الضاغط B — الفعالة: '+_v(kB,0,ISO('0'))+' | غير الفعالة: '+_v(qB,0,ISO('0'))+' | الباور فاكتور: '+ISO(_pf(kB,qB))); add('إجمالى الكهرباء الفعالة (A+B): '+_v(kA+kB,0)+' KWH'); }
+  else { const act=kA>0?kA:kC; add('الكهرباء الفعالة: '+_v(act,0,ISO('0'))+(kA>0?'':(kC>0?' (تجارى)':''))); add('الكهرباء غير الفعالة: '+_v(qA,0,ISO('0'))); add('الباور فاكتور: '+ISO(kA>0?_pf(kA,qA):'-')); }
+  const kwhTot=(kA+kB)>0?(kA+kB):kC; add('استهلاك المتر المكعب من الكهرباء: '+(sales>0&&kwhTot>0?ISO((kwhTot/sales).toFixed(3)+' KWH/م³'):'-')); add('');
+  add('*💧 استهلاك المياه*'); add('مياه الشرب: '+_v(d.w_drink,2,ISO('0'))+' م³'); add('مياه الحريق: '+_v(d.w_fire,2,ISO('0'))+' م³'); add('');
+  add('*🛢️ الزيوت — النوع والاستهلاك والرصيد*');
+  [['c1',1],['c2',2]].forEach(([pre,i])=>{ if(!d[pre+'_name']) return; add('◾ الضاغط ('+i+'):'); add('• الزيت الأول: '+_txt(d[pre+'_oil_type'])); add('   الاستهلاك: '+_v(d[pre+'_oil_cons'],2,ISO('0'))+' لتر · الرصيد: '+_v(d[pre+'_oil_bal'],2)+' لتر');
+    if(d[pre+'_oil2_type']){ add('• الزيت الثانى: '+_txt(d[pre+'_oil2_type'])); add('   الاستهلاك: '+_v(d[pre+'_oil2_cons'],2,ISO('0'))+' لتر · الرصيد: '+_v(d[pre+'_oil2_bal'],2)+' لتر'); }
+    if(d[pre+'_goil_type']){ add('• زيت المحرك الغازى: '+_txt(d[pre+'_goil_type'])); add('   الاستهلاك: '+_v(d[pre+'_goil_cons'],2,ISO('0'))+' لتر · الرصيد: '+_v(d[pre+'_goil_bal'],2)+' لتر'); } });
+  add('');
+  add('*🔧 الصيانات القادمة والتشحيم وفحص الأمان*');
+  [['c1',1],['c2',2]].forEach(([pre,i])=>{ if(!d[pre+'_name']) return; add('الضاغط ('+i+') '+ISO(d[pre+'_model']||d[pre+'_name'])+':'); add('• الصيانة القادمة: '+_txt(d[pre+'_maint_next'])); add('• المتبقى: '+_v(d[pre+'_maint_rem'],0)+' ساعة');
+    if(d[pre+'_gm_next']){ add('• صيانة المحرك الغازى القادمة: '+_txt(d[pre+'_gm_next'])+' — المتبقى: '+_v(d[pre+'_gm_rem'],0)+' ساعة'); } else add('• المتبقى لتشحيم الموتور الرئيسي: '+_v(d[pre+'_lube_rem'],0)+' ساعة'); });
+  add('فحص معدات الأمان — المتبقى: '+_v(d.safety_rem,0)+' يوم'); add('');
+  add('*⚠️ الأعطال والتوقفات والهوزات*');
+  const internal=String(d.stop_box||'').split(' | ').map(s=>s.trim()).filter(Boolean); const external=String(d.purge_box||'').split(' | ').map(s=>s.trim()).filter(Boolean);
+  const from=String(d.stop_from||'').split(' | ').map(s=>s.trim()); const to=String(d.stop_to||'').split(' | ').map(s=>s.trim()); const rdur=String(d.repair_dur||'').split(' | ').map(s=>s.trim());
+  const nStops=internal.length+external.length;
+  if(d.is_stopped==1||d.is_stopped==='1') add('⛔ المحطة متوقفة بالكامل: '+_txt(d.stop_reason)+(d.stop_fault_desc?' — '+ISO(d.stop_fault_desc):'')+(d.stop_fault_status?' — الحالة: '+ISO(d.stop_fault_status):''));
+  if(!nStops && !(d.is_stopped==1||d.is_stopped==='1')) add('لا توجد توقفات');
+  else { add('إجمالى مدة التوقفات: '+_txt(d.total_downtime||'0 س 0 د')+' — عدد ('+nStops+') توقف'); add('— تفصيل التوقفات —'); let k=0;
+    internal.forEach((seg,i)=>{ add('• عطل / توقف ('+(i+1)+'):'); if(from[k]||to[k]) add('   فترة التوقف: '+ISO('من '+(from[k]||'-')+' إلى '+(to[k]||'-'))); const du=_dur(seg); if(du) add('   مدة التوقف: '+ISO(du)); add('   سبب التوقف: '+_txt(_reason(seg))); if(rdur[k]) add('   مدة الإصلاح: '+ISO(rdur[k])); k++; });
+    external.forEach((seg,i)=>{ add('• توقف خارج الإرادة ('+(i+1)+'):'); if(from[k]||to[k]) add('   فترة التوقف: '+ISO('من '+(from[k]||'-')+' إلى '+(to[k]||'-'))); const du=_dur(seg); if(du) add('   مدة التوقف: '+ISO(du)); add('   سبب التوقف: '+_txt(_reason(seg))); k++; });
+    if(d.purge_downtime) add('إجمالى التوقف خارج الإرادة: '+ISO(d.purge_downtime)); }
+  if(parseInt(d.hoses_count)>0) add('الهوزات المتوقفة: '+ISO(String(d.hoses_count))+(d.hoses_stopped?' ('+ISO(d.hoses_stopped)+')':''));
+  if(d.supervisor_action) add('الإجراء المتخذ: '+ISO(d.supervisor_action));
+  if(d.notes){ add(''); add('*📝 ملاحظات*'); add(ISO(d.notes)); }
   return L.join('\n');
 };
-window.phoneFillReport=function(){ const ta=$('phone-report-text'); const d=window.__phoneLastDaily; if(!ta||!d) return; ta.value=phoneBuildText(d); window.__phoneReportFilled=true; const h=$('phone-report-hint'); if(h) h.textContent='نفس بنود بيان يوم '+(d.date||'')+' — انسخه وابعته واتساب زى ما بتعمل عادةً. كل الأرقام بالتفصيل فى ملف الإكسيل من الزرار البرتقانى.'; };
+window.phoneFillReport=function(){ const ta=$('phone-report-text'); const d=window.__phoneLastDaily; if(!ta||!d) return; ta.value=phoneBuildText(d); window.__phoneReportFilled=true; const h=$('phone-report-hint'); if(h) h.textContent='بيان يوم '+(d.date||'')+' بنفس صيغة رسالة الأوفلاين — انسخه وابعته واتساب زى ما بتعمل عادةً.'; };
 window.phoneCopyText=async function(){ const ta=$('phone-report-text'); if(!ta||!ta.value) return; try{ await navigator.clipboard.writeText(ta.value); }catch(e){ ta.focus(); ta.select(); try{ document.execCommand('copy'); }catch(x){} } const b=$('phone-copy-btn'); if(b){ const o=b.textContent; b.textContent='✅ اتنسخ'; setTimeout(()=>{ b.textContent=o; },2000); } };
 window.phoneShareText=async function(){ const ta=$('phone-report-text'); if(!ta||!ta.value) return; if(navigator.share){ try{ await navigator.share({text:ta.value}); return; }catch(e){} } phoneCopyText(); alert('اتنسخ النص — افتح واتساب والصقه'); };
 window.phoneExportToday=function(){ const d=window.__phoneLastDaily; phoneExport(d?OfficeAPI.normDate(d.date):undefined); };
