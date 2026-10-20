@@ -1090,7 +1090,7 @@ td.mg-fz2{position:sticky;right:48px;background:#F4F8FC;font-weight:700;text-ali
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
       <button id="phone-copy-btn" onclick="phoneCopyText()" style="flex:1;min-width:120px;background:#166534;color:#fff;border:none;border-radius:10px;padding:11px;font-family:Cairo;font-weight:800;font-size:14px;cursor:pointer">📋 نسخ النص</button>
       <button onclick="phoneShareText()" style="flex:1;min-width:120px;background:#1A4A7A;color:#fff;border:none;border-radius:10px;padding:11px;font-family:Cairo;font-weight:800;font-size:14px;cursor:pointer">📲 مشاركة النص</button>
-      <button onclick="phoneExportToday()" style="flex:1;min-width:120px;background:#B45309;color:#fff;border:none;border-radius:10px;padding:11px;font-family:Cairo;font-weight:800;font-size:14px;cursor:pointer">📊 ملف الإكسيل لليوم</button>
+      <button onclick="phoneExportToday('download')" style="flex:1;min-width:120px;background:#B45309;color:#fff;border:none;border-radius:10px;padding:11px;font-family:Cairo;font-weight:800;font-size:14px;cursor:pointer">⬇️ تحميل ملخص الأداء لليوم (إكسيل)</button>
     </div>
   </div>
   <div id="dashboard-capture" style="background:#fff">
@@ -9071,20 +9071,23 @@ function resetToLogin(){
 </script>
 
 <style>
-#phone-bar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:9000;background:linear-gradient(135deg,#0D2B4E,#1A4A7A);color:#fff;padding:8px 10px;box-shadow:0 -3px 12px rgba(0,0,0,.25);align-items:center;gap:8px;flex-wrap:wrap;font-family:Cairo}
+#phone-bar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:9000;background:linear-gradient(135deg,#0D2B4E,#1A4A7A);color:#fff;padding:8px 10px 10px;box-shadow:0 -3px 12px rgba(0,0,0,.25);flex-direction:column;gap:6px;font-family:Cairo}
+#phone-bar .row2{display:flex;gap:6px}
+#phone-bar .row2 button{flex:1;font-size:12px;padding:7px}
 #phone-bar.has{background:linear-gradient(135deg,#B45309,#F59E0B)}
-#phone-bar #phone-pending{flex:1;font-size:12.5px;font-weight:800;min-width:150px}
+#phone-bar #phone-pending{font-size:12.5px;font-weight:800;text-align:center}
 #phone-bar button{border:none;border-radius:10px;padding:9px 12px;font-family:Cairo;font-weight:800;font-size:13px;cursor:pointer;background:#fff;color:#0D2B4E}
-#phone-bar button.main{background:#166534;color:#fff;font-size:14px}
-#phone-msg{display:none;position:fixed;bottom:62px;left:10px;right:10px;z-index:9001;background:#DCFCE7;color:#166534;border:1px solid #86EFAC;border-radius:10px;padding:10px;font-weight:800;font-size:12.5px;font-family:Cairo;text-align:center}
-body{padding-bottom:70px}
+#phone-bar button.main{background:#166534;color:#fff;font-size:14px;width:100%}
+#phone-bar button.dl{background:#fff;color:#0D2B4E;width:100%;font-size:13px}
+#phone-msg{display:none;position:fixed;bottom:150px;left:10px;right:10px;z-index:9001;background:#DCFCE7;color:#166534;border:1px solid #86EFAC;border-radius:10px;padding:10px;font-weight:800;font-size:12.5px;font-family:Cairo;text-align:center}
+body{padding-bottom:160px}
 </style>
 <div id="phone-msg"></div>
 <div id="phone-bar">
   <span id="phone-pending">—</span>
-  <button class="main" onclick="phoneExport()">📊 ملف الإكسيل للسكرتارية</button>
-  <button onclick="phoneExportDay()" title="ملف يوم معين">📅 يوم معين</button>
-  <button onclick="phoneHistory()" title="سجل الأيام">🗂</button>
+  <button class="dl" onclick="phoneExport(undefined,'download')">⬇️ تحميل ملخص الأداء (إكسيل) على التليفون</button>
+  <button class="main" onclick="phoneExport(undefined,'share')">📲 إرسال ملخص الأداء (إكسيل) للسكرتارية على واتساب للتجميع</button>
+  <div class="row2"><button onclick="phoneExportDay()">📅 إرسال يوم معين</button><button onclick="phoneHistory()">🗂 سجل الأيام</button></div>
 </div>
 <script>
 // ═══════════ نسخة المحطة (أوفلاين): صندوق الصادر + ملف اليوم + المشاركة ═══════════
@@ -9106,13 +9109,13 @@ OfficeAPI.hooks.onPost=function(d, r){
 };
 function pending(){ return outbox.filter(e=>!e.sent); }
 function refreshBar(){ const bar=$('phone-bar'); if(!bar) return; const p=pending(); const n=p.length; $('phone-pending').textContent = n ? ('📊 '+n+' بيان جاهز لملف الإكسيل'+(p.some(e=>e.day<OfficeAPI.todayStr())?' (فيه أيام سابقة)':'')) : '✓ كل البيانات اتجمّعت فى ملفات إكسيل'; bar.classList.toggle('has', n>0); }
-function stationCode(){ try{ return (window.currentStation&&window.currentStation.code)||''; }catch(e){ return ''; } }
-function stationName(){ try{ return (window.currentStation&&window.currentStation.name)||''; }catch(e){ return ''; } }
+function stationCode(entries){ try{ if(window.currentStation&&window.currentStation.code) return String(window.currentStation.code); }catch(e){} const e=(entries||outbox).find(x=>x.payload&&x.payload.code); return e?String(e.payload.code):''; }
+function stationName(entries){ try{ if(window.currentStation&&window.currentStation.name) return window.currentStation.name; }catch(e){} const e=(entries||outbox).find(x=>x.payload&&x.payload.name); if(e) return e.payload.name; const c=stationCode(entries); const st=(OfficeAPI.STATIONS_ORDER||[]).find(s=>s.code===c); return st?st.name:''; }
 function buildWorkbook(entries){
   const rows=[['type','payload']]; entries.forEach(e=>rows.push([e.type==='daily'?'daily':e.type, JSON.stringify(e.payload)]));
   const wb=XLSX.utils.book_new();
   // ورقة معلومات مقروءة
-  const info=[['برنامج غازتك — ملف المحطة اليومى'],['المحطة', stationName()],['الكود', stationCode()],['تاريخ الإنشاء', new Date().toLocaleString('ar-EG')],['عدد البيانات', entries.length],[''],['النوع','اليوم','وقت التسجيل']];
+  const info=[['برنامج غازتك — ملف المحطة اليومى'],['المحطة', stationName(entries)],['الكود', stationCode(entries)],['تاريخ الإنشاء', new Date().toLocaleString('ar-EG')],['عدد البيانات', entries.length],[''],['النوع','اليوم','وقت التسجيل']];
   entries.forEach(e=>info.push([({daily:'بيان يومى',fire_safety:'منظومات الحريق',tadamon:'محضر التضامن',conversion:'التحويل والاختبار',calib:'وثيقة معايرة/ترخيص',calib_batch:'وثائق معايرة',station_defaults:'إعدادات الصيانة',calibConfig:'إعداد المعايرة'})[e.type]||e.type, e.day, e.at.replace('T',' ').slice(0,16)]));
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(info), 'معلومات');
   // البيان اليومى مقروء (عمود للتسمية وعمود لكل يوم)
@@ -9124,22 +9127,26 @@ function buildWorkbook(entries){
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), '_json');
   return wb;
 }
-async function shareOrDownload(wb, name){
-  const b64=XLSX.write(wb,{type:'base64',bookType:'xlsx'}); const bin=atob(b64); const bytes=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
-  const mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'; const file=new File([bytes], name, {type:mime});
-  if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){ try{ await navigator.share({files:[file], title:name, text:'ملف إكسيل بيانات المحطة — '+name}); return 'shared'; }catch(e){ if(e&&e.name==='AbortError') return 'cancel'; } }
-  const url=URL.createObjectURL(new Blob([bytes],{type:mime})); const a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 4000); return 'downloaded';
-}
-window.phoneExport=async function(onlyDay){
-  let entries=onlyDay ? outbox.filter(e=>e.day===onlyDay) : pending();
-  if(!entries.length){ alert(onlyDay ? ('لا توجد بيانات مسجّلة ليوم '+onlyDay) : 'لا توجد بيانات جديدة — احفظ البيان اليومى أولاً'); return; }
-  const code=stationCode()||(entries[0].payload.code||'0'); const days=[...new Set(entries.map(e=>e.day))].sort(); const name=code+'_'+(days.length===1?days[0]:(days[0]+'_الى_'+days[days.length-1]))+'.xlsx';
-  const res=await shareOrDownload(buildWorkbook(entries), name);
+function wbToFile(wb, name){ const b64=XLSX.write(wb,{type:'base64',bookType:'xlsx'}); const bin=atob(b64); const bytes=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i); const mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'; return {file:new File([bytes], name, {type:mime}), bytes, mime}; }
+function downloadFile(f){ const url=URL.createObjectURL(new Blob([f.bytes],{type:f.mime})); const a=document.createElement('a'); a.href=url; a.download=f.file.name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 4000); return 'downloaded'; }
+async function shareFile(f){ if(navigator.share && navigator.canShare && navigator.canShare({files:[f.file]})){ try{ await navigator.share({files:[f.file], title:f.file.name, text:'ملخص الأداء (إكسيل) — '+f.file.name}); return 'shared'; }catch(e){ if(e&&e.name==='AbortError') return 'cancel'; } } downloadFile(f); return 'downloaded-noshare'; }
+window.phoneExport=async function(onlyDay, mode){
+  mode=mode||'share'; let days;
+  if(onlyDay){ days=[onlyDay]; }
+  else { days=[...new Set(pending().map(e=>e.day))]; if(!days.length){ if(!confirm('كل البيانات اتجمّعت فى ملفات قبل كده.\nتجهيز ملف يوم النهاردة كامل مرة تانية؟')) return; days=[OfficeAPI.todayStr()]; } }
+  let entries=outbox.filter(e=>days.indexOf(e.day)>=0);
+  outbox.filter(e=>(e.type==='station_defaults'||e.type==='calibConfig') && entries.indexOf(e)<0).forEach(e=>entries.push(e));
+  if(!entries.some(e=>e.type!=='station_defaults'&&e.type!=='calibConfig')){ alert(onlyDay ? ('لا توجد بيانات مسجّلة ليوم '+onlyDay+' — احفظ البيان اليومى أولاً') : 'لا توجد بيانات — احفظ البيان اليومى أولاً'); return; }
+  const code=stationCode(entries)||'0'; const dayList=[...new Set(entries.filter(e=>e.type!=='station_defaults'&&e.type!=='calibConfig').map(e=>e.day))].sort(); const name=code+'_'+(dayList.length===1?dayList[0]:(dayList[0]+'_الى_'+dayList[dayList.length-1]))+'.xlsx';
+  const f=wbToFile(buildWorkbook(entries), name);
+  const res = (mode==='download') ? downloadFile(f) : await shareFile(f);
   if(res==='cancel') return;
+  const msg=$('phone-msg'); if(msg){ msg.style.display='block'; setTimeout(()=>{ msg.style.display='none'; }, 9000); }
+  if(mode==='download'){ if(msg) msg.textContent='⬇️ اتحمّل ملخص الأداء على التليفون: '+name+' ('+entries.length+' بيان) — ملف الإكسيل فى مجلد التنزيلات، افتحه وراجعه'; return; }
   entries.forEach(e=>{ e.sent=true; e.sentAt=new Date().toISOString(); }); saveOutbox();
-  const msg=$('phone-msg'); if(msg){ msg.textContent='✅ ملف الإكسيل جاهز: '+name+' — ابعته واتساب للسكرتارية لتجميع ملفات المنطقة'; msg.style.display='block'; setTimeout(()=>{ msg.style.display='none'; }, 8000); }
+  if(msg) msg.textContent = (res==='shared') ? ('📲 اتبعت ملخص الأداء: '+name+' ('+entries.length+' بيان) — تأكد إنه وصل واتساب السكرتارية') : ('⚠️ المشاركة المباشرة غير متاحة على هذا المتصفح — اتحمّل الملف '+name+' فى التنزيلات، ابعته واتساب للسكرتارية يدوياً');
 };
-window.phoneExportDay=function(){ const d=prompt('اكتب تاريخ اليوم المطلوب تجهيز ملف الإكسيل له (yyyy-mm-dd):', OfficeAPI.todayStr()); if(!d) return; phoneExport(OfficeAPI.normDate(d)); };
+window.phoneExportDay=function(){ const d=prompt('اكتب تاريخ اليوم المطلوب إرساله للسكرتارية (yyyy-mm-dd):', OfficeAPI.todayStr()); if(!d) return; phoneExport(OfficeAPI.normDate(d), 'share'); };
 window.phoneHistory=function(){ const byDay={}; outbox.forEach(e=>{ (byDay[e.day]=byDay[e.day]||[]).push(e); }); const days=Object.keys(byDay).sort().reverse(); if(!days.length){ alert('لا توجد بيانات مسجّلة بعد'); return; } alert('آخر الأيام المسجّلة:\n'+days.slice(0,20).map(d=>d+' — '+byDay[d].length+' بيان '+(byDay[d].every(e=>e.sent)?'✓ اتجمّع فى ملف إكسيل':'⏳ لسه ما اتجمّعش')).join('\n')); };
 // ── نص البيان اليومى بنفس صيغة رسالة الأوفلاين (واتساب) ──
 const ISO=s=>'⁨'+s+'⁩'; // عزل اتجاه الأرقام زى رسالة الأوفلاين
@@ -9198,7 +9205,7 @@ window.phoneBuildText=function(d){
 window.phoneFillReport=function(){ const ta=$('phone-report-text'); const d=window.__phoneLastDaily; if(!ta||!d) return; ta.value=phoneBuildText(d); window.__phoneReportFilled=true; const h=$('phone-report-hint'); if(h) h.textContent='بيان يوم '+(d.date||'')+' بنفس صيغة رسالة الأوفلاين — انسخه وابعته واتساب زى ما بتعمل عادةً.'; };
 window.phoneCopyText=async function(){ const ta=$('phone-report-text'); if(!ta||!ta.value) return; try{ await navigator.clipboard.writeText(ta.value); }catch(e){ ta.focus(); ta.select(); try{ document.execCommand('copy'); }catch(x){} } const b=$('phone-copy-btn'); if(b){ const o=b.textContent; b.textContent='✅ اتنسخ'; setTimeout(()=>{ b.textContent=o; },2000); } };
 window.phoneShareText=async function(){ const ta=$('phone-report-text'); if(!ta||!ta.value) return; if(navigator.share){ try{ await navigator.share({text:ta.value}); return; }catch(e){} } phoneCopyText(); alert('اتنسخ النص — افتح واتساب والصقه'); };
-window.phoneExportToday=function(){ const d=window.__phoneLastDaily; phoneExport(d?OfficeAPI.normDate(d.date):undefined); };
+window.phoneExportToday=function(mode){ const d=window.__phoneLastDaily; phoneExport(d?OfficeAPI.normDate(d.date):undefined, mode||'download'); };
 
 function tick(){ const bar=$('phone-bar'); if(!bar) return; const login=$('login-screen'); const loggedIn = login && login.style.display==='none'; bar.style.display = loggedIn ? 'flex' : 'none'; if(loggedIn) refreshBar(); const ds=$('dashboard-screen'); if(ds && ds.style.display==='block' && window.__phoneLastDaily && !window.__phoneReportFilled) phoneFillReport(); }
 setInterval(tick, 800);
